@@ -1,0 +1,7 @@
+.content-settings-row-header{
+    display: flex;
+    align-items: center;
+    height: 30px;
+    padding: 10px;
+    background: #eee;
+}

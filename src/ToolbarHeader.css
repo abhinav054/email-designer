@@ -1,0 +1,36 @@
+.block-content-header-row{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 50px;
+    border-bottom: 1px solid #eee;
+}
+
+.block-content-headers{
+    margin: 10px;
+    font-size: 20px;
+}
+
+.block-content-header-action{
+    display: flex;
+}
+
+.block-content-header-action-images{
+    height: 25px;
+    width: 25px;
+}
+
+.block-content-header-action-buttons{
+    border-left: 1px solid #c3c0c0;
+    border-right: 1px solid #c3c0c0;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}
+
+.block-headers-content{
+    font-size: 18px;
+    font-weight: 500;
+    margin: 10px;
+}
