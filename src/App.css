@@ -89,7 +89,6 @@
 
 .builder-row{
   width: 100%;
-  min-height: 100px;
   position: relative;
   text-align: center;
 }
@@ -104,6 +103,9 @@
     width: 50px;
     z-index: 101;
     cursor: pointer;
+    bottom: auto;
+    top:-20px;
+    opacity: 0.5;
 }
 
 
@@ -119,7 +121,9 @@
   bottom: 0px;
   left: calc(50% - 25px);
   cursor: pointer;
-
+  top: auto;
+  bottom: -20px;
+  opacity: 0.5;
 }
 
 
@@ -142,7 +146,6 @@
 .row-content{
     display: flex;
     width: 1000px;
-    min-height: 100px;
     text-align: center;
     justify-content: center;
     margin: auto;
@@ -227,6 +230,12 @@ p{
   display: flex;
   cursor: pointer;
 }
+
+
+.component-active{
+  border: 1px dashed #add9ff;
+}
+
 
 .blocks-content-header{
   display: flex;

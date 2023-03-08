@@ -10,9 +10,10 @@ import StrikeThrough from "./images/strikethrough_s_FILL0.png";
 import FormatLeft from "./images/format_align_left.png";
 import FormatRight from "./images/format_align_right.png";
 import FormatCenter from "./images/format_align_center.png";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { TextColorPicker } from "./TextColorPicker";
 import { BackgroundColorPicker } from "./BackgroundColorPicker";
+import {convertToRaw} from "draft-js";
 import * as _ from "lodash";
 
 import "./TextEditorToolbar.css";
@@ -33,9 +34,16 @@ const Toolbar = ({
         setLinkPopup,
         urlValue,
         setUrlValue,
+        editorState,
+        textColor,
+        backColor,
+        fontsize,
         editorRef})=>{
 
     const [textcolor, setTextColor] = useState("#000000");
+
+    const [initedit, setinitedit] = useState(false);
+
     const [backgroundColor, setBackgroundColor] = useState("#ffffff")
 
     const [bold, setBold] = useState(false);
@@ -51,6 +59,8 @@ const Toolbar = ({
     const [orderedlist, setOrderedList] = useState(false);
 
     const [isOpen, toggle] = useState(false);
+
+    const [isBackgroundOpen, toggleBackgroundOpen] = useState(false);
 
     const [fontFamily, setFontFamily] = useState("FONT_FAMILY_ARIAL");
     
@@ -156,13 +166,13 @@ const Toolbar = ({
         setTextAlignment(val);
     }
 
-    const toggleBackgroundColor = (val)=>{
-        let editorStyleCopy = {...editorStyle,
-                               background:val
-                            }
-        setEditorStyle(editorStyleCopy);
-        setBackgroundColor(val);
-    }
+    // const toggleBackgroundColor = (val)=>{
+    //     let editorStyleCopy = {...editorStyle,
+    //                            background:val
+    //                         }
+    //     setEditorStyle(editorStyleCopy);
+    //     setBackgroundColor(val);
+    // }
 
     const toggleColor = (color)=>{
         toggle(false);
@@ -181,6 +191,42 @@ const Toolbar = ({
         setTextColor(color);
         toggleInlineStyle(colorkey);
     }
+
+
+    const toggleBackgroundColor = (color)=>{
+        toggleBackgroundOpen(false);
+        let keys = Object.keys(customStyleState);
+        let colorval = color.replace("#","");
+        let colorkey = "BACKGROUND_COLOR_"+colorval;
+        let colorIndex = _.findIndex(keys, (k)=>{return k==colorkey});
+        if(colorIndex==-1){
+            let customStyleStateCopy = {...customStyleState};
+            customStyleStateCopy[colorkey] = {
+                background:color
+            };
+            setCustomStyleState(customStyleState);
+        }
+
+        setBackgroundColor(color);
+        toggleInlineStyle(colorkey);
+    }
+
+    useEffect(()=>{
+        let rawState = convertToRaw(editorState.getCurrentContent());
+        if(
+            rawState.blocks.length==1&&
+            rawState.blocks[0].text==""&&
+            initedit==false
+            ){
+            console.log("in the init block");
+            setinitedit(true);
+            setTextColor(textColor);
+            setFontSize(fontsize);
+            
+        }
+        
+    },[editorState, initedit])
+
 
     return(
         <div className="main-container">
@@ -203,7 +249,7 @@ const Toolbar = ({
                     <TextColorPicker color={textcolor} onChange={toggleColor} isOpen={isOpen} toggle={toggle}></TextColorPicker>
                 </div>
                 <div className="text-format-buttons">
-                    <BackgroundColorPicker color={backgroundColor} onChange={toggleBackgroundColor}></BackgroundColorPicker>
+                    <BackgroundColorPicker color={backgroundColor} onChange={toggleBackgroundColor} isOpen={isBackgroundOpen} toggle={toggleBackgroundOpen}></BackgroundColorPicker>
                 </div>
             </div>
             <div className="list-container">

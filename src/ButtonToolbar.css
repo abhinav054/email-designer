@@ -1,0 +1,94 @@
+.button-action-title-row{
+    display: flex;
+    justify-content: space-between;
+    padding: 10px;
+}
+
+.button-action-input-url{
+    display: flex;
+    padding: 10px;
+
+}
+
+.button-input-url-tag{
+    width: 20%;
+    background: #eee;
+    height: 35px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid #e1e0e0;
+    padding: 1px;
+    
+}
+
+.button-input-url{
+    width: 80%;
+    height: 35px;
+    border: 2px solid #e1e0e0;
+    box-sizing: inherit;
+    background-color: field;
+    padding: 1px;
+}
+
+.button-color-options-row{
+    display: flex;
+    padding: 10px;
+    justify-content: space-between;
+    border-bottom: 1px solid #eee;
+}
+
+.button-option-width{
+    display: flex;
+    padding: 10px;
+    justify-content: space-between;
+    border-bottom: 1px solid #eee;
+}
+
+.button-option-font-family{
+    display: flex;
+    padding: 10px;
+    justify-content: space-between;
+    border-bottom: 1px solid #eee;
+}
+
+.button-option-font-weight{
+    display: flex;
+    padding: 10px;
+    justify-content: space-between;
+    border-bottom: 1px solid #eee;
+}
+
+.button-option-font-size{
+    display: flex;
+    padding: 10px;
+    justify-content: space-between;
+    border-bottom: 1px solid #eee;
+}
+
+.button-option-alignment{
+    display: flex;
+    padding: 10px;
+    justify-content: space-between;
+    border-bottom: 1px solid #eee;
+}
+
+.button-option-alignment-actions{
+    display: flex;
+}
+
+.button-option-alignment-action{
+    padding: 4px;
+}
+
+.button-line-height{
+    display: flex;
+    padding: 10px;
+    justify-content: space-between;
+    border-bottom: 1px solid #eee;
+}
+
+.button-padding-options{
+    padding: 10px;
+    border-bottom: 1px solid #eee;
+}
