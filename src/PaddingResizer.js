@@ -8,11 +8,12 @@ const PaddingResizer = ({
 })=>{
 
 
-    const [detailedPadding, setDetailedPadding] = useState(false);
+    const [detailedPadding, setDetailedPadding] = useState(true);
 
     useEffect(()=>{
-        if(style.paddingLeft==style.paddingRight==style.paddingTop==style.paddingBottom){
-            setStyle(false)
+        if(new Set([style.paddingLeft,style.paddingRight,style.paddingTop,style.paddingBottom]).size==1){
+
+            setDetailedPadding(false)
         }
     },[style])
 

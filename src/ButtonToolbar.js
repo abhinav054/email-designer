@@ -133,12 +133,12 @@ const ButtonToolbar = ({closeComponent, deleteComponent, style, setStyle})=>{
                                 <PopoverPicker></PopoverPicker>
                             </div>   
                         </div>
-                        <div className="button-option-width">
+                        {/* <div className="button-option-width">
                             <div>Width</div>
                             <div>
                                 <input min="1" max="100" type="number"></input>%
                             </div>
-                        </div>
+                        </div> */}
                         <div className="button-option-font-family">
                             <div>
                                 Font Family

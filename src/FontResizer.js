@@ -15,7 +15,7 @@ const FontSizer = ({val, setval})=>{
                     }}
                 onClick={()=>
                             {
-                                let v = val;
+                                let v = parseFloat(val);
                                 v = v-1;
                                 setval(v);
                             }
@@ -40,7 +40,7 @@ const FontSizer = ({val, setval})=>{
                     }}
                 onClick={()=>
                             {
-                                let v = val;
+                                let v = parseFloat(val);
                                 v = v+1;
                                 setval(v);
                             }

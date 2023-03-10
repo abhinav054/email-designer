@@ -12,7 +12,7 @@ const BorderResizer = ({
     const [detailBorder, setDetailBorder] = useState(true);
 
     useEffect(()=>{
-        if(style.borderTop==style.borderBottom==style.borderLeft==style.borderRight){
+        if(new Set([style.borderTop,style.borderBottom,style.borderLeft,style.borderRight]).size==1){
             setDetailBorder(false);
         }
 
@@ -20,7 +20,7 @@ const BorderResizer = ({
 
     const getAllBorderVal =()=>{
         if(style.borderTop!=undefined){
-            let borderval = style.border.split(" ")[0].replace("px","");
+            let borderval = style.borderTop.split(" ")[0].replace("px","");
             return borderval;
         }
 
@@ -30,7 +30,7 @@ const BorderResizer = ({
 
     const getAllBorderType = ()=>{
         if(style.borderTop!=undefined){
-            let bordertype = style.border.split(" ")[1];
+            let bordertype = style.borderTop.split(" ")[1];
             return bordertype;
         }
         return "solid";
@@ -39,7 +39,7 @@ const BorderResizer = ({
 
     const getAllBorderColor = ()=>{
         if(style.borderTop!=undefined){
-            let borderColor = style.border.split(" ")[2];
+            let borderColor = style.borderTop.split(" ")[2];
             return {
                     color: borderColor,
                     active: true
@@ -57,13 +57,14 @@ const BorderResizer = ({
         let oldborderarray = stylesCopy.borderTop.split(" ");
         oldborderarray[0] = val+"px";
         let newborderval = oldborderarray.join(" ");
+
         stylesCopy = {...stylesCopy,
                       borderTop: newborderval,
                       borderBottom: newborderval,
                       borderLeft: newborderval,
                       borderRight: newborderval
                     }
-        setStyle(newborderval)
+        setStyle(stylesCopy)
     }
 
     const setAllBorderType = (val)=>{
@@ -77,7 +78,7 @@ const BorderResizer = ({
                       borderLeft: newborderval,
                       borderRight: newborderval
                     }
-        setStyle(newborderval);
+        setStyle(stylesCopy);
     }
 
     const setAllBorderColor = (val)=>{
@@ -91,7 +92,7 @@ const BorderResizer = ({
                       borderLeft: newborderval,
                       borderRight: newborderval
                     }
-        setStyle(newborderval);
+        setStyle(stylesCopy);
     }
 
 

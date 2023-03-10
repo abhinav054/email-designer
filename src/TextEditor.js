@@ -64,7 +64,6 @@ function TextEditor({
   const [editorStyle, setEditorStyle] = useState({
     "border": "1px solid gray",
     "minHeight": "1em",
-    "width": "100%",
     "textAlign": "left",
     "background": "#fff",
     "margin": "5px",

@@ -18,18 +18,18 @@ import CenterAlign from "./images/format_align_center.png";
 import LeftAlign from "./images/format_align_left.png";
 import MenuItem from "./images/menu_item.png";
 import { renderToString } from 'react-dom/server'
-import Editor from '@draft-js-plugins/editor';
 import { EditorState } from 'draft-js';
 import {stateToHTML} from 'draft-js-export-html';
 
-import {convertFromHTML, convertToHTML} from "draft-convert";
 import { PopoverPicker } from './ColorPicker';
 import TextEditor from './TextEditor';
 import TextEditorAppToolbar from './TextEditorAppToolbar';
 import ButtonToolbar from './ButtonToolbar';
 import PaddingResizer from './PaddingResizer';
-import Switch from './Switch';
 import * as _ from "lodash";
+import BorderResizer from './BorderResizer';
+import { rowStyle, columnStyle } from './StyleConsts';
+import ButtonComponent from './ButtonComponent';
 
 
 function App() {
@@ -149,7 +149,7 @@ function App() {
 
   const [desginElement, setDesignElement] = useState("contents");
 
-  const [componentActive, setComponentActive] = useState("button");
+  const [componentActive, setComponentActive] = useState("");
 
   const [componentHover, setComponentHover] = useState(false);
 
@@ -159,170 +159,6 @@ function App() {
     componentIndex: null
   })
 
-
-  const setColumnPadding = (val, type, rowindex, colindex)=>{
-      let rowsCopy = [...rows];
-      if(type=="all"){
-        rowsCopy[rowindex].columns[colindex].style = {...rowsCopy[rowActiveIndex].columns[colindex].style,
-                                                            padding: val+"px"
-                                                          }
-      }
-      if(type=="top"){
-        let padding = rowsCopy[rowindex].columns[colindex].style.padding;
-        let paddingarray = padding.split(" ");
-        if(paddingarray.length>1){
-          paddingarray[0] = val+"px";
-          rowsCopy[rowindex].columns[colindex].style = {...rowsCopy[rowActiveIndex].columns[colindex].style,
-                                                      padding: paddingarray.join(" ")
-                                                    }
-        }else{
-          rowsCopy[rowindex].columns[colindex].style = {...rowsCopy[rowActiveIndex].columns[colindex].style,
-                                                        padding: val+"px"+" "+paddingarray[0]+" "+paddingarray[0]+" "+paddingarray[0]
-                                                      }
-        }
-        
-      }
-
-      if(type=="right"){
-        let padding = rowsCopy[rowindex].columns[colindex].style.padding;
-        let paddingarray = padding.split(" ");
-        if(paddingarray.length>1){
-          paddingarray[1] = val+"px";
-          rowsCopy[rowindex].columns[colindex].style = {...rowsCopy[rowActiveIndex].columns[colindex].style,
-                                                      padding: paddingarray.join(" ")
-                                                    }
-        }else{
-          rowsCopy[rowindex].columns[colindex].style = {...rowsCopy[rowActiveIndex].columns[colindex].style,
-                                                        padding: paddingarray[0]+" "+val+"px"+" "+paddingarray[0]+" "+paddingarray[0]
-                                                      }
-        }
-      }
-
-      if(type=="bottom"){
-        let padding = rowsCopy[rowindex].columns[colindex].style.padding;
-        let paddingarray = padding.split(" ");
-        if(paddingarray.length>1){
-          paddingarray[2] = val+"px";
-          rowsCopy[rowindex].columns[colindex].style = {...rowsCopy[rowActiveIndex].columns[colindex].style,
-                                                      padding: paddingarray.join(" ")
-                                                    }
-        }else{
-          rowsCopy[rowindex].columns[colindex].style = {...rowsCopy[rowActiveIndex].columns[colindex].style,
-                                                        padding: paddingarray[0]+" "+paddingarray[0]+" "+val+"px"+" "+paddingarray[0]
-                                                      }
-        }
-      }
-
-      if(type=="left"){
-        let padding = rowsCopy[rowindex].columns[colindex].style.padding;
-        let paddingarray = padding.split(" ");
-        if(paddingarray.length>1){
-          paddingarray[3] = val+"px";
-          rowsCopy[rowindex].columns[colindex].style = {...rowsCopy[rowActiveIndex].columns[colindex].style,
-                                                      padding: paddingarray.join(" ")
-                                                    }
-        }else{
-          rowsCopy[rowindex].columns[colindex].style = {...rowsCopy[rowActiveIndex].columns[colindex].style,
-                                                        padding: paddingarray[0]+" "+paddingarray[0]+" "+paddingarray[0]+" "+val+"px"
-                                                      }
-        }
-      }
-      setRows(rowsCopy)
-
-  }
-
-
-
-  const getColumnPaddingdetailActive = (rowindex,colindex)=>{
-    let rowsCopy = [...rows];
-    let paddingarray = rowsCopy[rowindex].columns[colindex].style.padding.split(" ");
-    if(paddingarray.length>1){
-      return true;
-    }else{
-      return false;
-    }
-  }
-
-  // top -> right -> bottom -> left
-  const getColumnPadding = (type, rowindex, colindex)=>{
-    let rowsCopy = [...rows];
-    if(type=="all"){
-      let padding = rowsCopy[rowindex].columns[colindex].style.padding.replace("px","");
-      return padding;
-    }
-    if(type=="left"){
-      let padding = rowsCopy[rowindex].columns[colindex].style.padding;
-      let paddingarray = padding.split(" ");
-      if(paddingarray.length>1){
-        let paddingtype = paddingarray[3].replace("px", "");
-        return paddingtype
-      }else{
-        let paddingtype = paddingarray[0].replace("px","");
-        return paddingtype;
-      }
-      
-    }
-    if(type=="right"){
-      let padding = rowsCopy[rowindex].columns[colindex].style.padding;
-      let paddingarray = padding.split(" ");
-      if(paddingarray.length>1){
-        let paddingtype = paddingarray[1].replace("px", "");
-        return paddingtype
-      }else{
-        let paddingtype = paddingarray[0].replace("px", "");
-        return paddingtype;
-      }
-      
-    }
-
-    if(type=="top"){
-      let padding = rowsCopy[rowindex].columns[colindex].style.padding;
-      let paddingarray = padding.split(" ");
-      let paddingtype = paddingarray[0].replace("px", "");
-      return paddingtype
-    }
-
-    if(type=="bottom"){
-      let padding = rowsCopy[rowindex].columns[colindex].style.padding;
-      let paddingarray = padding.split(" ");
-      if(paddingarray.length>1){
-        let paddingtype = paddingarray[2].replace("px", "");
-        return paddingtype;
-      }else{
-        let paddingtype = paddingarray[0].replace("px","");
-        return paddingtype;
-      }
-      
-    }
-  }
-
-  useEffect(()=>{
-    if(rowActiveIndex==null){
-      return
-    }
-    let detailcolumnpadding = getColumnPaddingdetailActive(rowActiveIndex, columnsettingsactive);
-    setDetailColumnPadding(detailcolumnpadding);
-
-  },[columnsettingsactive])
-
-
-
-  const [detailColumnBorder, setDetailColumnBorder] = useState(false);
-
-
-
-
-
-  useEffect(()=>{
-    
-    if(rowActiveIndex==null){
-      return
-    }
-
-    let rowsCopy = [...rows];
-
-    
-  },[columnsettingsactive])
 
 
 
@@ -401,7 +237,6 @@ function App() {
   }
 
   const onElementDragStop = ()=>{
-    console.log(elementOver);
     console.log(elementDragged);
     if(elementDragged=="textbox"){
       let rowsCopy = [...rows];
@@ -416,10 +251,6 @@ function App() {
           },
           "active": true,
           "style":{
-            color: bodyStyles.color,
-            fontSize: bodyStyles.fontSize,
-            backgroundColor: bodyStyles.background,
-            fontFamily: "Arial, sans-serif",
             width: "100%"
           },
           "hoveractive": false
@@ -439,6 +270,29 @@ function App() {
       setRows(rowsCopy);
     }
 
+    if(elementDragged=="button"){
+      let rowsCopy = [...rows];
+      let componentlength = rowsCopy[elementOver.index].columns[elementOver.column].components.length;
+      rowsCopy[elementOver.index].columns[elementOver.column].components.push(
+        {
+          "type": "button",
+          "active": true,
+          "style":{
+            width: "100%"
+          }
+        }
+      )
+      makeComponentDeactive();
+      setActiveComponentSettings({
+        rowIndex: elementOver.index,
+        columnIndex: elementOver.column,
+        componentIndex: componentlength
+      });
+
+      setComponentActive("button");
+      setRows(rowsCopy);
+    }
+
 
   }
 
@@ -454,15 +308,6 @@ function App() {
       return setEditorState;      
   }
 
-  const handleClick = (event)=>{
-    console.log(event);
-  }
-
-  useEffect(()=>{
-    document.addEventListener("click", handleClick, true);
-  },[])
-
-
   const [rowActive, setRowActive] = useState(false);
 
   const [rowActiveIndex, setRowActiveIndex] = useState(null);
@@ -475,14 +320,9 @@ function App() {
       "columns":[
         {
           "style":{
-            "width": "50%",
-            "padding": "0px",
-            "border": "0px"
-          },
-          "activestyle":{
-            "width": "50%",
-            "border": "1px dashed rgb(93,93,223)"
-          },
+                   ...columnStyle,
+                   "width": "50%"
+                  },
           "components":[
 
           ],
@@ -490,13 +330,8 @@ function App() {
         },
         {
           "style":{
+            ...columnStyle,
             "width": "50%",
-            "padding": "0px",
-            "border": "0px"
-          },
-          "activestyle":{
-            "width": "50%",
-            "border": "1px dashed rgb(93,93,223)"
           },
           "components":[
 
@@ -506,10 +341,26 @@ function App() {
       ],
       "active": false,
       "showButtons": false,
-      "editable": false
+      "editable": false,
+      "style":{
+        ...rowStyle,
+        "display": "flex",
+      }
     }
   ])
 
+  const setActiveRowStyle = (style)=>{
+    let rowsCopy = [...rows];
+    rowsCopy[rowActiveIndex].style = style;
+    setRows(rowsCopy);
+  }
+
+
+  const setActiveColumnStyle = (style)=>{
+    let rowsCopy = [...rows];
+    rowsCopy[rowActiveIndex].columns[columnsettingsactive].style = style;
+    setRows(rowsCopy)
+  }
 
   const getColumnBackgroundColor = (rowindex,columnindex)=>{
       let rowsCopy = [...rows];
@@ -548,14 +399,8 @@ function App() {
       "type": "1",
       "columns":[
         {
-          "style":{
-            "width": "100%",
-            "padding": "0px",
-            "border": "0px"
-          },
-          "activestyle":{
-            "width": "100%",
-            "border": "1px dashed rgb(93,93,223)"
+          "style":{...columnStyle,
+            "width": "100%"
           },
           "components":[
 
@@ -565,7 +410,11 @@ function App() {
       ],
       "active": false,
       "showButtons": false,
-      "editable": false
+      "editable": false,
+      "style":{...rowStyle,
+              "display": "flex",
+              "width": "100%"
+      }
     }
 
     setRows(rowsCopy);
@@ -600,14 +449,10 @@ function App() {
       activeRow.columns.push(
         {
           "active": false,
-          "activestyle":{
-            width: width+"%",
-            "border": "1px dashed rgb(93,93,223)"
-          },
           "style":{
-            width: width+"%",
-            "padding": "0px",
-            "border": "0px"
+            ...columnStyle,
+            ...bodyStyles,
+            width: width+"%"
           },
           "components":[]
         }
@@ -635,12 +480,14 @@ function App() {
       setComponentActive("textbox");
     }
     rowsCopy[rowindex].columns[columnindex].components[componentindex] = componentCopy;
+    if(activeComponentSettings.rowIndex!=rowindex||activeComponentSettings.columnIndex!=columnindex||activeComponentSettings.columnIndex!=componentindex){
+      makeComponentDeactive()
+    }
     let activecomponentsettings = {
       rowIndex: rowindex,
       columnIndex: columnindex,
       componentIndex: componentindex
     }
-    makeComponentDeactive()
     setActiveComponentSettings(activecomponentsettings);
 
     setRows(rowsCopy);
@@ -790,8 +637,6 @@ function App() {
               setRowActiveIndex(index);
               setRowActive(true);
             }}
-          
-          
           >
 
             {row.showButtons&&
@@ -812,13 +657,14 @@ function App() {
                 </div>
               </>
             }
-            <div className="row-content">
+            <div style={row.style}>
               {row.columns.map((column,cindex)=>{
                 return(
-                  <div style={column.active?column.activestyle:column.style} 
+                  <div style={column.active?{width:column.style.width, border: "1px dashed blue"}:{width:column.style.width}}>
+                    <div style={{...column.style,width:"100%"}} 
                         onDrop={()=>{handleDrop(index,cindex)}}
                         onDragOver={handleDragOver}
-                  >
+                    >
                     {column.components.length==0&&
                       <div className="column-content-placeholder">
                         Drag Element
@@ -829,7 +675,7 @@ function App() {
                         <>
                           {column.components.map((c, componentindex)=>{
                             return(
-                              <div style={c.style}
+                                <div style={c.style}
                                    className={(c.hoveractive&&c.active==false)&&"component-active"}
                                    onMouseEnter={()=>{
                                     setComponentHover(true);
@@ -857,20 +703,24 @@ function App() {
                                     setEditorState={handleTextEditorState(index,cindex,componentindex)}
                                     customStyleState={customStyleState}
                                     setCustomStyleState={setCustomStyleState}
-                                    textColor={c.style.color}
-                                    backColor={c.style.backgroundColor}
-                                    fontsize={"FONT_SIZE_"+c.style.fontSize.replace("px","")}
+                                    textColor={bodyStyles.color}
+                                    backColor={bodyStyles.background}
+                                    fontsize={"FONT_SIZE_"+bodyStyles.fontSize.replace("px","")}
                                     ></TextEditor>
                                 }
                                 {c.type=="textbox"&&c.active==false&&
                                   <div dangerouslySetInnerHTML={{__html: c.settings.html}}>
                                   </div>
                                 }
+                                {c.type=="button"&&
+                                  <ButtonComponent active={c.active} style={c.style}></ButtonComponent>
+                                }
                               </div>
                             )
                           })}
                         </>
                     }
+                    </div>
                   </div>
                 )
               })}
@@ -1092,341 +942,19 @@ function App() {
                           }
                         </div>
                         <div className="column-padding-settings">
-                          <PaddingResizer>
+                          <PaddingResizer
+                            style={rows[rowActiveIndex].columns[columnsettingsactive].style}
+                            setStyle={setActiveColumnStyle}
+                          >
                           </PaddingResizer>
                         </div>
                         <div className="column-border-settings">
-                          <div className="column-border-settings-title">
-                            <div>
-                              Border
-                            </div>
-                            <div>
-                              More Options <Switch value={detailColumnBorder} onChange={setDetailColumnBorder}></Switch>
-                            </div>
-                          </div>
-                          {detailColumnBorder==false&&
-                            <div className='all-in-one-border'>
-                              <div className='all-in-one-border-title'>
-                                All sides
-                              </div>
-                              <div className='border-details'>
-                                <div className='border-details-row'>
-                                  <select>
-                                    <option>Solid</option>
-                                    <option>Dotted</option>
-                                    <option>Dashed</option>
-                                  </select>
-                                </div>
-                                
-                                <div className='border-details-row'>
-                                  <div className='font-sizer'>
-                                    <div 
-                                      style={{
+                          <BorderResizer
+                            style={rows[rowActiveIndex].columns[columnsettingsactive].style}
+                            setStyle={setActiveColumnStyle}
+                          >
 
-                                        "width": "24px",
-                                        "height": "24px",
-                                        "background": "rgb(238, 238, 238)",
-                                        "display": "flex",
-                                        "align-items": "center",
-                                        "justify-content": "center"
-                                      }}
-                                      onClick={()=>{
-                                        let v = parseInt(getColumnPadding("all",rowActiveIndex,columnsettingsactive));
-                                        v = v-1;
-                                        setColumnPadding(v, "all", rowActiveIndex, columnsettingsactive);
-
-                                      }}
-                                    >
-                                      <img style={{width: "15px",height: "15px"}} src={Remove}></img>
-                                    </div>
-                                    <input style={{ height: "24px",border: "2px", "text-align": "center"}}min="0" max="90" type="number" value={getColumnPadding("all",rowActiveIndex,columnsettingsactive)} onChange={(e)=>{setColumnPadding(e.target.value, "all", rowActiveIndex, columnsettingsactive)}}></input>
-                                    <div 
-                                      style={{
-                                        "width": "24px",
-                                        "height": "24px",
-                                        "background": "rgb(238, 238, 238)",
-                                        "display": "flex",
-                                        "align-items": "center",
-                                        "justify-content": "center"
-                                      }}
-                                      onClick={()=>{
-                                        let v = parseInt(getColumnPadding("all",rowActiveIndex,columnsettingsactive));
-                                        v = v+1;
-                                        setColumnPadding(v, "all", rowActiveIndex, columnsettingsactive);
-
-                                      }}
-
-                                    >
-                                      <img style={{width: "15px",height: "15px"}} src={AddIcon}></img>
-                                    </div>
-                                  </div>
-                                  <div className="border-color-picker">
-                                    <PopoverPicker 
-                                      color={getColumnBackgroundColor(rowActiveIndex,columnsettingsactive).color} 
-                                      active={getColumnBackgroundColor(rowActiveIndex,columnsettingsactive).active}
-                                      onChange={changeColumnBackground(rowActiveIndex,columnsettingsactive)}
-                                    ></PopoverPicker>
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                          }
-                          {detailColumnBorder==true&&
-                            <>
-                              <div className="detail-border-row">
-                                <div className="detail-border-detail">
-                                  <div className="all-in-one-border-title">
-                                    Top Border
-                                  </div>
-                                  <div className='border-details'>
-                                    <div className='border-details-row'>
-                                      <select>
-                                        <option>Solid</option>
-                                        <option>Dotted</option>
-                                        <option>Dashed</option>
-                                      </select>
-                                    </div>
-                                
-                                    <div className='border-details-row'>
-                                      <div className='font-sizer'>
-                                        <div 
-                                          style={{
-                                            "width": "24px",
-                                            "height": "24px",
-                                            "background": "rgb(238, 238, 238)",
-                                            "display": "flex",
-                                            "align-items": "center",
-                                            "justify-content": "center"
-                                          }}
-                                          onClick={()=>{
-                                            let v = parseInt(getColumnPadding("all",rowActiveIndex,columnsettingsactive));
-                                            v = v-1;
-                                            setColumnPadding(v, "all", rowActiveIndex, columnsettingsactive);
-                                          }}
-                                        >
-                                          <img style={{width: "15px",height: "15px"}} src={Remove}></img>
-                                        </div>
-                                        <input style={{ height: "24px",border: "2px", "text-align": "center"}}min="0" max="90" type="number" value={getColumnPadding("all",rowActiveIndex,columnsettingsactive)} onChange={(e)=>{setColumnPadding(e.target.value, "all", rowActiveIndex, columnsettingsactive)}}></input>
-                                        <div 
-                                          style={{
-                                            "width": "24px",
-                                            "height": "24px",
-                                            "background": "rgb(238, 238, 238)",
-                                            "display": "flex",
-                                            "align-items": "center",
-                                            "justify-content": "center"
-                                          }}
-                                          onClick={()=>{
-                                            let v = parseInt(getColumnPadding("all",rowActiveIndex,columnsettingsactive));
-                                            v = v+1;
-                                            setColumnPadding(v, "all", rowActiveIndex, columnsettingsactive);
-                                          }}
-
-                                        >
-                                        <img style={{width: "15px",height: "15px"}} src={AddIcon}></img>
-                                        </div>
-                                      </div>
-                                      <div className="border-color-picker">
-                                        <PopoverPicker 
-                                          color={getColumnBackgroundColor(rowActiveIndex,columnsettingsactive).color} 
-                                          active={getColumnBackgroundColor(rowActiveIndex,columnsettingsactive).active}
-                                          onChange={changeColumnBackground(rowActiveIndex,columnsettingsactive)}
-                                        ></PopoverPicker>
-                                      </div>
-                                    </div>
-                                  </div>
-                                </div>
-                                <div className="detail-border-detail">
-                                  <div className="all-in-one-border-title">
-                                    Right Border
-                                  </div>
-                                  <div className='border-details'>
-                                    <div className='border-details-row'>
-                                      <select>
-                                        <option>Solid</option>
-                                        <option>Dotted</option>
-                                        <option>Dashed</option>
-                                      </select>
-                                    </div>
-                                
-                                    <div className='border-details-row'>
-                                      <div className='font-sizer'>
-                                        <div 
-                                          style={{
-                                            "width": "24px",
-                                            "height": "24px",
-                                            "background": "rgb(238, 238, 238)",
-                                            "display": "flex",
-                                            "align-items": "center",
-                                            "justify-content": "center"
-                                          }}
-                                          onClick={()=>{
-                                            let v = parseInt(getColumnPadding("all",rowActiveIndex,columnsettingsactive));
-                                            v = v-1;
-                                            setColumnPadding(v, "all", rowActiveIndex, columnsettingsactive);
-                                          }}
-                                        >
-                                          <img style={{width: "15px",height: "15px"}} src={Remove}></img>
-                                        </div>
-                                        <input style={{ height: "24px",border: "2px", "text-align": "center"}}min="0" max="90" type="number" value={getColumnPadding("all",rowActiveIndex,columnsettingsactive)} onChange={(e)=>{setColumnPadding(e.target.value, "all", rowActiveIndex, columnsettingsactive)}}></input>
-                                        <div 
-                                          style={{
-                                            "width": "24px",
-                                            "height": "24px",
-                                            "background": "rgb(238, 238, 238)",
-                                            "display": "flex",
-                                            "align-items": "center",
-                                            "justify-content": "center"
-                                          }}
-                                          onClick={()=>{
-                                            let v = parseInt(getColumnPadding("all",rowActiveIndex,columnsettingsactive));
-                                            v = v+1;
-                                            setColumnPadding(v, "all", rowActiveIndex, columnsettingsactive);
-                                          }}
-
-                                        >
-                                        <img style={{width: "15px",height: "15px"}} src={AddIcon}></img>
-                                        </div>
-                                      </div>
-                                      <div className="border-color-picker">
-                                        <PopoverPicker 
-                                          color={getColumnBackgroundColor(rowActiveIndex,columnsettingsactive).color} 
-                                          active={getColumnBackgroundColor(rowActiveIndex,columnsettingsactive).active}
-                                          onChange={changeColumnBackground(rowActiveIndex,columnsettingsactive)}
-                                        ></PopoverPicker>
-                                      </div>
-                                    </div>
-                                  </div>
-                                </div>   
-                              </div>
-                              <div className="detail-border-row">
-                              <div className="detail-border-detail">
-                                  <div className="all-in-one-border-title">
-                                    Bottom Border
-                                  </div>
-                                  <div className='border-details'>
-                                    <div className='border-details-row'>
-                                      <select>
-                                        <option>Solid</option>
-                                        <option>Dotted</option>
-                                        <option>Dashed</option>
-                                      </select>
-                                    </div>
-                                
-                                    <div className='border-details-row'>
-                                      <div className='font-sizer'>
-                                        <div 
-                                          style={{
-                                            "width": "24px",
-                                            "height": "24px",
-                                            "background": "rgb(238, 238, 238)",
-                                            "display": "flex",
-                                            "align-items": "center",
-                                            "justify-content": "center"
-                                          }}
-                                          onClick={()=>{
-                                            let v = parseInt(getColumnPadding("all",rowActiveIndex,columnsettingsactive));
-                                            v = v-1;
-                                            setColumnPadding(v, "all", rowActiveIndex, columnsettingsactive);
-                                          }}
-                                        >
-                                          <img style={{width: "15px",height: "15px"}} src={Remove}></img>
-                                        </div>
-                                        <input style={{ height: "24px",border: "2px", "text-align": "center"}}min="0" max="90" type="number" value={getColumnPadding("all",rowActiveIndex,columnsettingsactive)} onChange={(e)=>{setColumnPadding(e.target.value, "all", rowActiveIndex, columnsettingsactive)}}></input>
-                                        <div 
-                                          style={{
-                                            "width": "24px",
-                                            "height": "24px",
-                                            "background": "rgb(238, 238, 238)",
-                                            "display": "flex",
-                                            "align-items": "center",
-                                            "justify-content": "center"
-                                          }}
-                                          onClick={()=>{
-                                            let v = parseInt(getColumnPadding("all",rowActiveIndex,columnsettingsactive));
-                                            v = v+1;
-                                            setColumnPadding(v, "all", rowActiveIndex, columnsettingsactive);
-                                          }}
-
-                                        >
-                                        <img style={{width: "15px",height: "15px"}} src={AddIcon}></img>
-                                        </div>
-                                      </div>
-                                      <div className="border-color-picker">
-                                        <PopoverPicker 
-                                          color={getColumnBackgroundColor(rowActiveIndex,columnsettingsactive).color} 
-                                          active={getColumnBackgroundColor(rowActiveIndex,columnsettingsactive).active}
-                                          onChange={changeColumnBackground(rowActiveIndex,columnsettingsactive)}
-                                        ></PopoverPicker>
-                                      </div>
-                                    </div>
-                                  </div>
-                                </div>
-                                <div className="detail-border-detail">
-                                  <div className="all-in-one-border-title">
-                                    Left Border
-                                  </div>
-                                  <div className='border-details'>
-                                    <div className='border-details-row'>
-                                      <select>
-                                        <option>Solid</option>
-                                        <option>Dotted</option>
-                                        <option>Dashed</option>
-                                      </select>
-                                    </div>
-                                
-                                    <div className='border-details-row'>
-                                      <div className='font-sizer'>
-                                        <div 
-                                          style={{
-                                            "width": "24px",
-                                            "height": "24px",
-                                            "background": "rgb(238, 238, 238)",
-                                            "display": "flex",
-                                            "align-items": "center",
-                                            "justify-content": "center"
-                                          }}
-                                          onClick={()=>{
-                                            let v = parseInt(getColumnPadding("all",rowActiveIndex,columnsettingsactive));
-                                            v = v-1;
-                                            setColumnPadding(v, "all", rowActiveIndex, columnsettingsactive);
-                                          }}
-                                        >
-                                          <img style={{width: "15px",height: "15px"}} src={Remove}></img>
-                                        </div>
-                                        <input style={{ height: "24px",border: "2px", "text-align": "center"}}min="0" max="90" type="number" value={getColumnPadding("all",rowActiveIndex,columnsettingsactive)} onChange={(e)=>{setColumnPadding(e.target.value, "all", rowActiveIndex, columnsettingsactive)}}></input>
-                                        <div 
-                                          style={{
-                                            "width": "24px",
-                                            "height": "24px",
-                                            "background": "rgb(238, 238, 238)",
-                                            "display": "flex",
-                                            "align-items": "center",
-                                            "justify-content": "center"
-                                          }}
-                                          onClick={()=>{
-                                            let v = parseInt(getColumnPadding("all",rowActiveIndex,columnsettingsactive));
-                                            v = v+1;
-                                            setColumnPadding(v, "all", rowActiveIndex, columnsettingsactive);
-                                          }}
-
-                                        >
-                                        <img style={{width: "15px",height: "15px"}} src={AddIcon}></img>
-                                        </div>
-                                      </div>
-                                      <div className="border-color-picker">
-                                        <PopoverPicker 
-                                          color={getColumnBackgroundColor(rowActiveIndex,columnsettingsactive).color} 
-                                          active={getColumnBackgroundColor(rowActiveIndex,columnsettingsactive).active}
-                                          onChange={changeColumnBackground(rowActiveIndex,columnsettingsactive)}
-                                        ></PopoverPicker>
-                                      </div>
-                                    </div>
-                                  </div>
-                                </div>
-                              </div>
-                            </>
-                          }
+                          </BorderResizer>
                         </div>
                   </div>
                 </div>
@@ -1437,7 +965,7 @@ function App() {
                     </p>
                   </div>
                   <div className="row-settings">
-                    <div className='column-background-settings'>
+                    <div className='row-background-settings'>
                           <div>
                             <div className="column-background-buttons">
                               <button className={rowBackground=="color"?"background-color-toggle active":"background-color-toggle"} onClick={()=>{setRowBackground("color")}}>Color</button>
@@ -1467,253 +995,22 @@ function App() {
                             </div>
                           }
                     </div>
-                    <div className="column-padding-settings">
-                          <div className="column-padding-settings-title">
-                            <div>
-                              Padding
-                            </div>
-                            <div>
-                              More Options <Switch value={detailRowPadding} onChange={setDetailRowPadding}></Switch>
-                            </div>
-                          </div>
-                          {detailRowPadding==false&&
-                            <div className="all-in-one-padding">
-                              <div className="all-in-one-padding-title">
-                                All sides
-                              </div>
-                              <div className='font-sizer'>
-                                <div 
-                                  style={{
+                    <div className="row-padding-settings">
 
-                                      "width": "24px",
-                                      "height": "24px",
-                                      "background": "rgb(238, 238, 238)",
-                                      "display": "flex",
-                                      "align-items": "center",
-                                      "justify-content": "center"
-                                  }}
-                                  onClick={()=>{
-                                    let v = parseInt(getColumnPadding("all",rowActiveIndex,columnsettingsactive));
-                                    v = v-1;
-                                    setColumnPadding(v, "all", rowActiveIndex, columnsettingsactive);
+                        <PaddingResizer
+                          style={rows[rowActiveIndex].style}
+                          setStyle={setActiveRowStyle}
+                        >
+                        </PaddingResizer>
+                          
+                    </div>
+                    <div className="row-border-settings">
+                      <BorderResizer
+                        style={rows[rowActiveIndex].style}
+                        setStyle={setActiveRowStyle}
+                      >
 
-                                  }}
-                                >
-                                  <img style={{width: "15px",height: "15px"}} src={Remove}></img>
-                                </div>
-                                <input style={{ height: "24px",border: "2px", "text-align": "center"}}min="0" max="90" type="number" value={getColumnPadding("all",rowActiveIndex,columnsettingsactive)} onChange={(e)=>{setColumnPadding(e.target.value, "all", rowActiveIndex, columnsettingsactive)}}></input>
-                                <div 
-                                  style={{
-                                    "width": "24px",
-                                    "height": "24px",
-                                    "background": "rgb(238, 238, 238)",
-                                    "display": "flex",
-                                    "align-items": "center",
-                                    "justify-content": "center"
-                                  }}
-                                  onClick={()=>{
-                                    let v = parseInt(getColumnPadding("all",rowActiveIndex,columnsettingsactive));
-                                    v = v+1;
-                                    setColumnPadding(v, "all", rowActiveIndex, columnsettingsactive);
-
-                                  }}
-
-                                  >
-                                  <img style={{width: "15px",height: "15px"}} src={AddIcon}></img>
-                                </div>
-                              </div>
-                            </div>
-                          }
-                          {detailRowPadding==true&&
-                            <>
-                              <div className="detail-padding-row">
-                                <div className="detail-padding-detail">
-                                  <div className="all-in-one-padding-title">
-                                    Top Padding
-                                  </div>
-                                  <div className='font-sizer'>
-                                <div 
-                                  style={{
-
-                                      "width": "24px",
-                                      "height": "24px",
-                                      "background": "rgb(238, 238, 238)",
-                                      "display": "flex",
-                                      "align-items": "center",
-                                      "justify-content": "center"
-                                  }}
-                                  onClick={()=>{
-                                    let v = parseInt(getColumnPadding("top",rowActiveIndex,columnsettingsactive));
-                                    v = v-1;
-                                    setColumnPadding(v, "top", rowActiveIndex, columnsettingsactive);
-
-                                  }}
-                                >
-                                  <img style={{width: "15px",height: "15px"}} src={Remove}></img>
-                                </div>
-                                <input style={{ height: "24px",border: "2px", "text-align": "center"}}min="0" max="90" type="number" value={getColumnPadding("top",rowActiveIndex,columnsettingsactive)} onChange={(e)=>{setColumnPadding(e.target.value, "top", rowActiveIndex, columnsettingsactive)}}></input>
-                                <div 
-                                  style={{
-                                    "width": "24px",
-                                    "height": "24px",
-                                    "background": "rgb(238, 238, 238)",
-                                    "display": "flex",
-                                    "align-items": "center",
-                                    "justify-content": "center"
-                                  }}
-                                  onClick={()=>{
-                                    let v = parseInt(getColumnPadding("top",rowActiveIndex,columnsettingsactive));
-                                    v = v+1;
-                                    setColumnPadding(v, "top", rowActiveIndex, columnsettingsactive);
-
-                                  }}
-
-                                  >
-                                  <img style={{width: "15px",height: "15px"}} src={AddIcon}></img>
-                                </div>
-                                  </div>
-                                </div>
-                                <div className="detail-padding-detail">
-                                  <div className="all-in-one-padding-title">
-                                    Right Padding
-                                  </div>
-                                  <div className='font-sizer'>
-                                    <div 
-                                      style={{
-                                        "width": "24px",
-                                        "height": "24px",
-                                        "background": "rgb(238, 238, 238)",
-                                        "display": "flex",
-                                        "align-items": "center",
-                                        "justify-content": "center"
-                                      }}
-                                      onClick={()=>{
-                                        let v = parseInt(getColumnPadding("right",rowActiveIndex,columnsettingsactive));
-                                        v = v-1;
-                                        setColumnPadding(v, "right", rowActiveIndex, columnsettingsactive);
-
-                                      }}
-                                    >
-                                      <img style={{width: "15px",height: "15px"}} src={Remove}></img>
-                                    </div>
-                                      <input style={{ height: "24px",border: "2px", "text-align": "center"}}min="0" max="90" type="number" value={getColumnPadding("right",rowActiveIndex,columnsettingsactive)} onChange={(e)=>{setColumnPadding(e.target.value, "right", rowActiveIndex, columnsettingsactive)}}></input>
-                                    <div 
-                                      style={{
-                                        "width": "24px",
-                                        "height": "24px",
-                                        "background": "rgb(238, 238, 238)",
-                                        "display": "flex",
-                                        "align-items": "center",
-                                        "justify-content": "center"
-                                      }}
-                                      onClick={()=>{
-                                        let v = parseInt(getColumnPadding("right",rowActiveIndex,columnsettingsactive));
-                                        v = v+1;
-                                        setColumnPadding(v, "right", rowActiveIndex, columnsettingsactive);
-
-                                      }}
-
-                                    >
-                                      <img style={{width: "15px",height: "15px"}} src={AddIcon}></img>
-                                    </div>
-                                  </div>
-                                </div>
-                              </div>
-                              <div className="detail-padding-row">
-                                <div className="detail-padding-detail">
-                                  <div className="all-in-one-padding-title">
-                                    Bottom Padding
-                                  </div>
-                                  <div className='font-sizer'>
-                                    <div 
-                                  style={{
-
-                                      "width": "24px",
-                                      "height": "24px",
-                                      "background": "rgb(238, 238, 238)",
-                                      "display": "flex",
-                                      "align-items": "center",
-                                      "justify-content": "center"
-                                  }}
-                                  onClick={()=>{
-                                    let v = parseInt(getColumnPadding("bottom",rowActiveIndex,columnsettingsactive));
-                                    v = v-1;
-                                    setColumnPadding(v, "bottom", rowActiveIndex, columnsettingsactive);
-
-                                  }}
-                                >
-                                  <img style={{width: "15px",height: "15px"}} src={Remove}></img>
-                                    </div>
-                                    <input style={{ height: "24px",border: "2px", "text-align": "center"}}min="0" max="90" type="number" value={getColumnPadding("bottom",rowActiveIndex,columnsettingsactive)} onChange={(e)=>{setColumnPadding(e.target.value, "bottom", rowActiveIndex, columnsettingsactive)}}></input>
-                                    <div 
-                                  style={{
-                                    "width": "24px",
-                                    "height": "24px",
-                                    "background": "rgb(238, 238, 238)",
-                                    "display": "flex",
-                                    "align-items": "center",
-                                    "justify-content": "center"
-                                  }}
-                                  onClick={()=>{
-                                    let v = parseInt(getColumnPadding("bottom",rowActiveIndex,columnsettingsactive));
-                                    v = v+1;
-                                    setColumnPadding(v, "bottom", rowActiveIndex, columnsettingsactive);
-
-                                  }}
-
-                                  >
-                                  <img style={{width: "15px",height: "15px"}} src={AddIcon}></img>
-                                    </div>
-                                  </div>
-                                </div>
-                                <div className="detail-padding-detail">
-                                  <div className="all-in-one-padding-title">
-                                    Left Padding
-                                  </div>
-                                  <div className='font-sizer'>
-                                    <div 
-                                      style={{
-                                        "width": "24px",
-                                        "height": "24px",
-                                        "background": "rgb(238, 238, 238)",
-                                        "display": "flex",
-                                        "align-items": "center",
-                                        "justify-content": "center"
-                                      }}
-                                      onClick={()=>{
-                                        let v = parseInt(getColumnPadding("left",rowActiveIndex,columnsettingsactive));
-                                        v = v-1;
-                                        setColumnPadding(v, "left", rowActiveIndex, columnsettingsactive);
-
-                                      }}
-                                    >
-                                      <img style={{width: "15px",height: "15px"}} src={Remove}></img>
-                                    </div>
-                                      <input style={{ height: "24px",border: "2px", "text-align": "center"}}min="0" max="90" type="number" value={getColumnPadding("left",rowActiveIndex,columnsettingsactive)} onChange={(e)=>{setColumnPadding(e.target.value, "left", rowActiveIndex, columnsettingsactive)}}></input>
-                                    <div 
-                                      style={{
-                                        "width": "24px",
-                                        "height": "24px",
-                                        "background": "rgb(238, 238, 238)",
-                                        "display": "flex",
-                                        "align-items": "center",
-                                        "justify-content": "center"
-                                      }}
-                                      onClick={()=>{
-                                        let v = parseInt(getColumnPadding("left",rowActiveIndex,columnsettingsactive));
-                                        v = v+1;
-                                        setColumnPadding(v, "left", rowActiveIndex, columnsettingsactive);
-
-                                      }}
-
-                                    >
-                                      <img style={{width: "15px",height: "15px"}} src={AddIcon}></img>
-                                    </div>
-                                  </div>
-                                </div>
-                              </div>
-                            </>
-                          }
+                      </BorderResizer>
                     </div>
                   </div>
                 </div>
@@ -1724,7 +1021,8 @@ function App() {
               <TextEditorAppToolbar closeComponent={makeComponentDeactive} deleteComponent={deleteComponent}></TextEditorAppToolbar>
             }
             {(componentActive=="button")&&
-              <ButtonToolbar closeComponent={makeComponentDeactive} deleteComponent={deleteComponent}></ButtonToolbar>
+              <></>
+              // <ButtonToolbar closeComponent={makeComponentDeactive} deleteComponent={deleteComponent}></ButtonToolbar>
             }
           </>
         }
