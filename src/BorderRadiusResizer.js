@@ -1,8 +1,60 @@
-
-
+import { useEffect, useState } from "react";
+import Switch from "./Switch";
+import FontSizer from "./FontResizer";
 
 const BorderRadiusResizer = ({style, setStyle})=>{
     
+
+    const [detailedBorderRadius, setDetailedBorderRadius] = useState(true);
+
+    useEffect(()=>{
+        if(new Set([style.borderTopLeftRadius, style.borderTopRightRadius, style.borderBottomLeftRadius, style.borderBottomRightRadius]).size==1){
+            setDetailedBorderRadius(false);
+        }
+    },[style])
+
+    const setAllBorderRadius = (val)=>{
+        let styleCopy = {...style};
+        styleCopy = {...styleCopy,
+                    borderTopLeftRadius: val,
+                    borderTopRightRadius: val,
+                    borderBottomLeftRadius: val,
+                    borderBottomRightRadius: val
+                    }
+        setStyle(styleCopy);
+    }
+
+    const setBorderTopLeftRadius = (val)=>{
+        let styleCopy = {...style};
+        styleCopy = {...styleCopy,
+                     borderTopLeftRadius: val
+                    }
+        setStyle(styleCopy)
+    }
+
+    const setBorderTopRightRadius = (val)=>{
+        let styleCopy = {...style};
+        styleCopy = {...styleCopy,
+                    borderTopRightRadius: val
+                    }
+        setStyle(styleCopy)
+    }
+
+    const setBorderBottomLeftRadius = (val)=>{
+        let styleCopy = {...style};
+        styleCopy = {...styleCopy,
+                     borderBottomLeftRadius: val
+                    }
+        setStyle(styleCopy)
+    }
+
+    const setBorderBottomRightRadius = (val)=>{
+        let styleCopy = {...style};
+        styleCopy = {...styleCopy,
+                    borderBottomRightRadius: val
+        }
+        setStyle(styleCopy);
+    }
 
     return (
     <div>
@@ -20,7 +72,7 @@ const BorderRadiusResizer = ({style, setStyle})=>{
                     All sides
                 </div>
                 <FontSizer
-                    val={style.borderTopRadius}
+                    val={style.borderTopLeftRadius}
                     setval={setAllBorderRadius}
                 >
                 </FontSizer>
@@ -31,21 +83,21 @@ const BorderRadiusResizer = ({style, setStyle})=>{
                 <div className="detail-padding-row">
                     <div className="detail-padding-detail">
                         <div className="all-in-one-padding-title">
-                            Top Border Radius
+                            Top Left
                         </div>
                         <FontSizer
-                            val={style.borderTopRadius}
-                            setval={setBorderTopRadius}
+                            val={style.borderTopLeftRadius}
+                            setval={setBorderTopLeftRadius}
                         >
                         </FontSizer>
                     </div>
                     <div className="detail-padding-detail">
                         <div className="all-in-one-padding-title">
-                            Right Border Radius
+                            Top Right
                         </div>
                         <FontSizer
-                            val={style.borderRightRadius}
-                            setval={setBorderRightRadius}
+                            val={style.borderTopRightRadius}
+                            setval={setBorderTopRightRadius}
                         >
                         </FontSizer>
                     </div>
@@ -53,21 +105,21 @@ const BorderRadiusResizer = ({style, setStyle})=>{
                 <div className="detail-padding-row">
                     <div className="detail-padding-detail">
                         <div className="all-in-one-padding-title">
-                            Bottom Border Radius
+                            Bottom Left
                         </div>
                         <FontSizer
-                            val={style.borderBottomRadius}
-                            setval={setBorderBottomRadius}
+                            val={style.borderBottomLeftRadius}
+                            setval={setBorderBottomLeftRadius}
                         >
                         </FontSizer>
                     </div>
                     <div className="detail-padding-detail">
                         <div className="all-in-one-padding-title">
-                            Left Border Radius
+                            Bottom Right
                         </div>
                         <FontSizer
-                            val={style.borderLeftRadius}
-                            setval={setBorderLeftRadius}
+                            val={style.borderBottomLeftRadius}
+                            setval={setBorderBottomLeftRadius}
                         >
                         </FontSizer>
                     </div>
@@ -79,3 +131,5 @@ const BorderRadiusResizer = ({style, setStyle})=>{
     </div>)
 
 }
+
+export default BorderRadiusResizer;

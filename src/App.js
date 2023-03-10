@@ -28,7 +28,7 @@ import ButtonToolbar from './ButtonToolbar';
 import PaddingResizer from './PaddingResizer';
 import * as _ from "lodash";
 import BorderResizer from './BorderResizer';
-import { rowStyle, columnStyle } from './StyleConsts';
+import { rowStyle, columnStyle , ButtonStyle} from './StyleConsts';
 import ButtonComponent from './ButtonComponent';
 
 
@@ -278,7 +278,17 @@ function App() {
           "type": "button",
           "active": true,
           "style":{
+            ...ButtonStyle,
             width: "100%"
+          },
+          "settings":{
+            "actionSelected": "open_website",
+            "actionUrl": "",
+            "actionUrlTarget": "new_tab",
+            "phoneNumber": "",
+            "mailTo": "",
+            "subject": "",
+            "body": ""
           }
         }
       )
@@ -536,6 +546,10 @@ function App() {
         componentCopy.settings.html = html;
         setComponentActive("");
       }
+      if(rowsCopy[activeComponentSettings.rowIndex].columns[activeComponentSettings.columnIndex].components[activeComponentSettings.componentIndex].type=="button"){
+        componentCopy.active=false;
+        setComponentActive("");
+      }
       rowsCopy[activeComponentSettings.rowIndex].columns[activeComponentSettings.columnIndex].components[activeComponentSettings.componentIndex] = componentCopy;
       setRows(rowsCopy);
       let activeComponentSettingsCopy = {...activeComponentSettings,
@@ -583,6 +597,24 @@ function App() {
   }
 
   
+
+  // const getActiveComponentStyle = ()=>{
+  //   let rowsCopy = [...rows];
+  //   let style = {...rowsCopy[activeComponentSettings.rowIndex].columns[activeComponentSettings.columnIndex].components[activeComponentSettings.componentIndex]};
+  //   return style;
+  // }
+
+  const setActiveComponentStyle = (style)=>{
+    let rowsCopy = [...rows];
+    rowsCopy[activeComponentSettings.rowIndex].columns[activeComponentSettings.columnIndex].components[activeComponentSettings.componentIndex].style = style;
+    setRows(rowsCopy);
+  }
+
+  const setActiveComponentComponentSettings = (settings)=>{
+    let rowsCopy = [...rows];
+    rowsCopy[activeComponentSettings.rowIndex].columns[activeComponentSettings.columnIndex].components[activeComponentSettings.componentIndex].settings = settings;
+    setRows(rowsCopy);
+  }
 
 
   return (
@@ -675,47 +707,102 @@ function App() {
                         <>
                           {column.components.map((c, componentindex)=>{
                             return(
+                            <>
+                              {c.type=="textbox"&&
                                 <div style={c.style}
-                                   className={(c.hoveractive&&c.active==false)&&"component-active"}
-                                   onMouseEnter={()=>{
+                                  className={(c.hoveractive&&c.active==false)&&"component-active"}
+                                  onMouseEnter={()=>{
                                     setComponentHover(true);
                                     let rowsCopy = [...rows];
                                     rowsCopy[index].columns[cindex].components[componentindex] = {...rowsCopy[index].columns[cindex].components[componentindex],
-                                                                                                     hoveractive:true
-                                                                                                    }
+                                                                                                hoveractive:true
+                                                                                               }
                                     setRows(rowsCopy)
                                    }}
-                                   onMouseLeave={()=>{
+                                  onMouseLeave={()=>{
                                     setComponentHover(false);
                                     let rowsCopy = [...rows];
                                     rowsCopy[index].columns[cindex].components[componentindex] = {...rowsCopy[index].columns[cindex].components[componentindex],
-                                                                                                     hoveractive:false
-                                                                                                    }
+                                                                                                hoveractive:false
+                                                                                               }
                                     setRows(rowsCopy)
-                                   }}
+                                  }}
 
-                                   onClick={()=>{
+                                  onClick={()=>{
                                     makeComponentActive(index, cindex, componentindex)
-                                   }}>
-                                {c.type=="textbox"&&c.active==true&&
-                                  <TextEditor 
-                                    editorState={c.settings.editorState} 
-                                    setEditorState={handleTextEditorState(index,cindex,componentindex)}
-                                    customStyleState={customStyleState}
-                                    setCustomStyleState={setCustomStyleState}
-                                    textColor={bodyStyles.color}
-                                    backColor={bodyStyles.background}
-                                    fontsize={"FONT_SIZE_"+bodyStyles.fontSize.replace("px","")}
+                                  }}
+                                >
+                                  {c.type=="textbox"&&c.active==true&&
+                                    <TextEditor 
+                                      editorState={c.settings.editorState} 
+                                      setEditorState={handleTextEditorState(index,cindex,componentindex)}
+                                      customStyleState={customStyleState}
+                                      setCustomStyleState={setCustomStyleState}
+                                      textColor={bodyStyles.color}
+                                      backColor={bodyStyles.background}
+                                      fontsize={"FONT_SIZE_"+bodyStyles.fontSize.replace("px","")}
                                     ></TextEditor>
-                                }
-                                {c.type=="textbox"&&c.active==false&&
-                                  <div dangerouslySetInnerHTML={{__html: c.settings.html}}>
-                                  </div>
-                                }
-                                {c.type=="button"&&
-                                  <ButtonComponent active={c.active} style={c.style}></ButtonComponent>
-                                }
+                                  }
+                                  {c.type=="textbox"&&c.active==false&&
+                                    <div dangerouslySetInnerHTML={{__html: c.settings.html}}>
+                                    </div>
+                                  }
+                                </div>
+                            
+                            }
+                                
+                            {c.type=="button"&&
+                              <div
+                                style={{
+                                  "textAlign": c.style.textAlign,
+                                  "width": c.style.width
+                                }}
+                                className={(c.hoveractive&&c.active==false)&&"component-active"}
+                                onMouseEnter={()=>{
+                                  setComponentHover(true);
+                                  let rowsCopy = [...rows];
+                                  rowsCopy[index].columns[cindex].components[componentindex] = {...rowsCopy[index].columns[cindex].components[componentindex],
+                                                                                            hoveractive:true
+                                                                                           }
+                                  setRows(rowsCopy)
+                                }}
+                                onMouseLeave={()=>{
+                                  setComponentHover(false);
+                                  let rowsCopy = [...rows];
+                                  rowsCopy[index].columns[cindex].components[componentindex] = {...rowsCopy[index].columns[cindex].components[componentindex],
+                                                                                            hoveractive:false
+                                                                                           }
+                                  setRows(rowsCopy)
+                                }}
+
+                                onClick={()=>{
+                                  makeComponentActive(index, cindex, componentindex)
+                                }}
+                              >
+                                <ButtonComponent active={c.active} style={
+                                  {
+                                    "paddingLeft": c.style.paddingLeft,
+                                    "paddingRight": c.style.paddingRight,
+                                    "paddingTop": c.style.paddingTop,
+                                    "paddingBottom": c.style.paddingBottom,
+                                    "borderBottom": c.style.borderBottom,
+                                    "borderTop": c.style.borderTop,
+                                    "borderRight": c.style.borderRight,
+                                    "borderLeft": c.style.borderLeft,
+                                    "borderTopLeftRadius":c.style.borderTopLeftRadius,
+                                    "borderTopRightRadius": c.style.borderTopRightRadius,
+                                    "borderBottomLeftRadius": c.style.borderBottomLeftRadius,
+                                    "borderBottomRightRadius": c.style.borderBottomRightRadius,
+                                    "background": c.style.background,
+                                    "color": c.style.color,
+                                    "lineHeight": c.style.lineHeight,
+                                    "fontSize": c.style.fontSize    
+                                  }
+                                }></ButtonComponent>
                               </div>
+                              
+                            }
+                            </>
                             )
                           })}
                         </>
@@ -1021,8 +1108,14 @@ function App() {
               <TextEditorAppToolbar closeComponent={makeComponentDeactive} deleteComponent={deleteComponent}></TextEditorAppToolbar>
             }
             {(componentActive=="button")&&
-              <></>
-              // <ButtonToolbar closeComponent={makeComponentDeactive} deleteComponent={deleteComponent}></ButtonToolbar>
+              <ButtonToolbar 
+                  closeComponent={makeComponentDeactive} 
+                  deleteComponent={deleteComponent}
+                  style={rows[activeComponentSettings.rowIndex].columns[activeComponentSettings.columnIndex].components[activeComponentSettings.componentIndex].style}
+                  setStyle={setActiveComponentStyle}
+                  settings={rows[activeComponentSettings.rowIndex].columns[activeComponentSettings.columnIndex].components[activeComponentSettings.componentIndex].style}
+                  setSettings={setActiveComponentComponentSettings}
+                  ></ButtonToolbar>
             }
           </>
         }

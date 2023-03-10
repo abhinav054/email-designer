@@ -10,8 +10,9 @@ import FontSizer from "./FontResizer";
 import BorderResizer from "./BorderResizer";
 import PaddingResizer from "./PaddingResizer";
 import { availableFontWeights,availableFontFamily } from "./AvailableFonts";
+import BorderRadiusResizer from "./BorderRadiusResizer";
 
-const ButtonToolbar = ({closeComponent, deleteComponent, style, setStyle})=>{
+const ButtonToolbar = ({closeComponent, deleteComponent, style, setStyle, settings, setSettings})=>{
 
     const actionsType = [
         {"label": "Open Website", "value": "open_website"},
@@ -19,23 +20,97 @@ const ButtonToolbar = ({closeComponent, deleteComponent, style, setStyle})=>{
         {"label": "Send Email", "value": "send_email"}
     ]
 
-    const [actionSelected, setActionSelected] = useState("open_website");
 
-    const [actionUrl, setActionUrl] = useState("");
+    const setActionSelected = (val)=>{
+        let settingsCopy = {...settings};
+        settingsCopy.actionSelected = val;
+        setSettings(settingsCopy)
+    }
 
-    const [actionUrlTarget, setActionUrlTarget] = useState("");
+    const setActionUrl = (val)=>{
+        let settingsCopy = {...settings};
+        settingsCopy.actionUrl = val;
+        setSettings(settingsCopy);
 
-    const [textColor, setTextColor] = useState("#FFFFFF");
+    }
 
-    const [backgroundColor, setBackgroundColor] = useState("#0000FF");
+    // const [actionUrl, setActionUrl] = useState("");
 
-    const [fontWeight, setFontWeight] = useState("normal");
+    const setActionUrlTarget = (val)=>{
+        let settingsCopy = {...settings};
+        settingsCopy.actionUrlTarget = val;
+        setSettings(settingsCopy);
+    }
 
-    const [fontFamily, setFontFamily] = useState("FONT_FAMILY_ARIAL");
+    // const [actionUrlTarget, setActionUrlTarget] = useState("");
 
-    const [fontSize, setFontSize] = useState(14);
+    const setPhoneNumber = (val)=>{
+        let settingsCopy = {...settings};
+        settingsCopy.phoneNumber = val;
+        setSettings(settingsCopy);
+    }
 
-    const [lineHeight, setLineHeight] = useState(1.4);
+    const setMailto = (val)=>{
+        let settingsCopy = {...settings};
+        settingsCopy.mailTo = val;
+        setSettings(settingsCopy);
+    }
+
+    const setSubject = (val)=>{
+        let settingsCopy = {...settings};
+        settingsCopy.subject = val;
+        setSettings(settingsCopy);
+    }
+
+    const setBody = (val)=>{
+        let settingsCopy = {...settings};
+        settingsCopy.body = val;
+        setSettings(settingsCopy);
+    }
+
+    const setTextColor = (val)=>{
+        let styleCopy = {...style};
+        styleCopy.color = val;
+        setStyle(styleCopy);
+    }
+
+    const setBackgroundColor = (val)=>{
+        let styleCopy = {...style};
+        styleCopy.background = val;
+        setStyle(styleCopy);
+    }
+
+    const setFontFamily = (val)=>{
+        let styleCopy = {...style};
+        styleCopy.fontFamily = val;
+        setStyle(styleCopy);
+    }
+
+
+    const setFontSize = (val)=>{
+        let styleCopy = {...style};
+        styleCopy.fontSize = val;
+        setStyle(styleCopy);
+    }
+
+    const setFontWeight = (val)=>{
+        let styleCopy = {...style};
+        styleCopy.fontWeight = val;
+        setStyle(val);
+    }
+
+    const setAlignment = (val)=>{
+        let styleCopy = {...style};
+        styleCopy.textAlign = val;
+        setStyle(styleCopy);
+    }
+
+    const setLineHeight = (val)=>{
+        let styleCopy = {...style};
+        styleCopy.lineHeight = val;
+        setStyle(styleCopy);
+    }
+
 
     
 
@@ -54,7 +129,7 @@ const ButtonToolbar = ({closeComponent, deleteComponent, style, setStyle})=>{
                         </div>
                         <div>
                             <select 
-                                value={actionSelected}
+                                value={settings.actionSelected}
                                 onChange={(e)=>{setActionSelected(e.target.value)}}
                             >
                                 {actionsType.map((at)=>{
@@ -66,54 +141,54 @@ const ButtonToolbar = ({closeComponent, deleteComponent, style, setStyle})=>{
                         </div>
                     </div>
                     <div className="button-action-content-row">
-                        {actionSelected=="open_website"&&
+                        {settings.actionSelected=="open_website"&&
                             <>
                                 <div className="button-action-input-url">
                                     <div className="button-input-url-tag">
                                         URL
                                     </div>
-                                    <input className="button-input-url"></input>
+                                    <input className="button-input-url" value={settings.actionUrl} onChange={(e)=>{setActionUrl(e.target.val)}}></input>
                                 </div>
                                 <div className="button-action-input-url">
                                     <div className="button-input-url-tag">
                                         Target
                                     </div>
-                                    <select value={actionUrlTarget} onChange={(e)=>{setActionUrlTarget(e.target.value)}} className="button-input-url">
+                                    <select value={settings.actionUrlTarget} onChange={(e)=>{setActionUrlTarget(e.target.value)}} className="button-input-url">
                                         <option value="new_tab">New Tab</option>
                                         <option value="same_tab">Same Tab</option>
                                     </select>
                                 </div>
                             </>
                         }
-                        {actionSelected=="call_phone"&&
+                        {settings.actionSelected=="call_phone"&&
                             <>
                                 <div className="button-action-input-url">
                                     <div className="button-input-url-tag">
                                         Phone Number
                                     </div>
-                                    <input className="button-input-url"></input>
+                                    <input className="button-input-url" value={settings.phoneNumber} onChange={(e)=>{setPhoneNumber(e.target.value)}}></input>
                                 </div> 
                             </>
                         }
-                        {actionSelected=="send_email"&&
+                        {settings.actionSelected=="send_email"&&
                             <>
                                 <div className="button-action-input-url">
                                     <div className="button-input-url-tag">
                                         Mail To
                                     </div>
-                                    <input className="button-input-url"></input>
+                                    <input className="button-input-url" value={settings.mailTo} onChange={(e)=>{setMailto(e.target.value)}}></input>
                                 </div>
                                 <div className="button-action-input-url">
                                     <div className="button-input-url-tag">
                                         Subject
                                     </div>
-                                    <input className="button-input-url"></input>
+                                    <input className="button-input-url" value={settings.subject} onChange={(e)=>{setSubject(e.target.value)}}></input>
                                 </div>
                                 <div className="button-action-input-url">
                                     <div className="button-input-url-tag">
                                         Body
                                     </div>
-                                    <textarea className="button-input-url"></textarea>
+                                    <textarea className="button-input-url" value={settings.body} onChange={(e)=>{setBody(e.target.value)}}></textarea>
                                 </div>
                             </>
 
@@ -126,11 +201,11 @@ const ButtonToolbar = ({closeComponent, deleteComponent, style, setStyle})=>{
                         <div className="button-color-options-row">
                             <div>
                                 Text Color
-                                <PopoverPicker></PopoverPicker>
+                                <PopoverPicker color={style.color} onChange={setTextColor}></PopoverPicker>
                             </div>
                             <div>
                                 Background Color
-                                <PopoverPicker></PopoverPicker>
+                                <PopoverPicker color={style.background} onChange={setBackgroundColor}></PopoverPicker>
                             </div>   
                         </div>
                         {/* <div className="button-option-width">
@@ -144,10 +219,10 @@ const ButtonToolbar = ({closeComponent, deleteComponent, style, setStyle})=>{
                                 Font Family
                             </div>
                             <div>
-                                <select value={fontFamily} onChange={()=>{}}>
+                                <select value={style.fontFamily} onChange={(e)=>{setFontFamily(e.target.value)}}>
                                     {availableFontFamily.map((ff)=>{
                                         return(
-                                            <option value={ff.value}>{ff.label}</option>
+                                            <option value={ff.cssVal}>{ff.label}</option>
                                         )
                                     })}
                                 </select>
@@ -158,7 +233,7 @@ const ButtonToolbar = ({closeComponent, deleteComponent, style, setStyle})=>{
                                 Font Weight
                             </div>
                             <div>
-                                <select value={fontWeight} onChange={()=>{}}>
+                                <select value={style.fontWeight} onChange={(e)=>{setFontWeight(e.target.value)}}>
                                     {availableFontWeights.map((fw)=>{
                                         return (
                                             <option value={fw.value}>{fw.label}</option>
@@ -173,7 +248,7 @@ const ButtonToolbar = ({closeComponent, deleteComponent, style, setStyle})=>{
                                 Font Size
                             </div>
                             <div>
-                                <FontSizer val={fontSize} setval={setFontSize}></FontSizer>
+                                <FontSizer val={style.fontSize} setval={setFontSize}></FontSizer>
                             </div>
                         </div>
                         <div className="button-option-alignment">
@@ -181,13 +256,13 @@ const ButtonToolbar = ({closeComponent, deleteComponent, style, setStyle})=>{
                                 Alignment
                             </div>
                             <div className="button-option-alignment-actions">
-                                <div className="button-option-alignment-action">
+                                <div className="button-option-alignment-action" onClick={()=>{setAlignment("left")}}>
                                     <img style={{width: 24, height: 24}} src={FormatAlignLeft}></img>
                                 </div>
-                                <div className="button-option-alignment-action">
+                                <div className="button-option-alignment-action" onClick={()=>{setAlignment("center")}}>
                                     <img style={{width: 24, height: 24}} src={FormatAlignCenter}></img>
                                 </div>
-                                <div className="button-option-alignment-action">
+                                <div className="button-option-alignment-action" onClick={()=>{setAlignment("right")}}>
                                     <img style={{width: 24, height: 24}} src={FormatAlignRight}></img>
                                 </div>
                             </div>
@@ -202,7 +277,7 @@ const ButtonToolbar = ({closeComponent, deleteComponent, style, setStyle})=>{
                                 Line Height
                             </div>
                             <div>
-                                <FontSizer val={lineHeight} setval={setLineHeight}></FontSizer>
+                                <FontSizer val={style.lineHeight} setval={setLineHeight}></FontSizer>
                             </div>
                         </div>
                         <div className="button-padding-options">
@@ -218,6 +293,13 @@ const ButtonToolbar = ({closeComponent, deleteComponent, style, setStyle})=>{
                                 setStyle={setStyle}
                             >
                             </BorderResizer>
+                        </div>
+                        <div className="button-border-radius-options">
+                            <BorderRadiusResizer
+                                style={style}
+                                setStyle={setStyle}
+                            >
+                            </BorderRadiusResizer>
                         </div>
                     </div>
                 </div>

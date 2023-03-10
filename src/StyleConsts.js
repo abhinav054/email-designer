@@ -33,11 +33,13 @@ export const ButtonStyle = {
     "borderTop": "0px solid #000000",
     "borderRight": "0px solid #000000",
     "borderLeft": "0px solid #000000",
-    "borderBottomRadius":4,
-    "borderTopRadius": 4,
-    "borderLeftRadius": 4,
-    "borderRightRadius": 4,
+    "borderTopLeftRadius":4,
+    "borderTopRightRadius": 4,
+    "borderBottomLeftRadius": 4,
+    "borderBottomRightRadius": 4,
     "background": "#2196F3",
     "color": "#000000",
-    "text-align": "center"    
+    "textAlign": "center",
+    "lineHeight": 1.2,
+    "fontSize": 14    
 }
