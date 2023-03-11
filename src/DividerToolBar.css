@@ -1,0 +1,15 @@
+.divider-settings-row{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    border-bottom: 1px solid #eee;
+}
+
+.divider-setting-align-options{
+    display: flex;
+}
+
+.divider-setting-align-option{
+    padding: 5px;
+}

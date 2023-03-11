@@ -30,6 +30,9 @@ import * as _ from "lodash";
 import BorderResizer from './BorderResizer';
 import { rowStyle, columnStyle , ButtonStyle} from './StyleConsts';
 import ButtonComponent from './ButtonComponent';
+import HeadersToolBar from './HeadersToolBar';
+import DividerToolBar from './DividerToolBar';
+import MenuToolBar from './MenuToolBar';
 
 
 function App() {
@@ -149,7 +152,7 @@ function App() {
 
   const [desginElement, setDesignElement] = useState("contents");
 
-  const [componentActive, setComponentActive] = useState("");
+  const [componentActive, setComponentActive] = useState("menu");
 
   const [componentHover, setComponentHover] = useState(false);
 
@@ -1116,6 +1119,26 @@ function App() {
                   settings={rows[activeComponentSettings.rowIndex].columns[activeComponentSettings.columnIndex].components[activeComponentSettings.componentIndex].style}
                   setSettings={setActiveComponentComponentSettings}
                   ></ButtonToolbar>
+            }
+            {(componentActive=="header")&&
+              <HeadersToolBar
+                closeComponent={makeComponentDeactive}
+                deleteComponent={deleteComponent}
+              >
+              </HeadersToolBar>
+            }
+            {(componentActive=="divider")&&
+              <DividerToolBar
+                closeComponent={makeComponentDeactive}
+                deleteComponent={deleteComponent}
+              >
+              </DividerToolBar>
+            }
+            {(componentActive=="menu")&&
+              <MenuToolBar
+                closeComponent={makeComponentDeactive}
+                deleteComponent={deleteComponent}
+              ></MenuToolBar>
             }
           </>
         }

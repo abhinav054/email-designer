@@ -1,0 +1,23 @@
+.header-setting-row{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    border-bottom: 1px solid #eee;
+}
+
+.header-setting-type-options{
+    display: flex;
+}
+
+.header-setting-type-option{
+    padding: 10px;
+    border: 1px solid #eee;
+}
+
+.header-setting-text-align-options{
+    display: flex;
+}
+.header-setting-text-align-option{
+    padding: 5px;
+}
