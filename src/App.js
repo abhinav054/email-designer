@@ -33,7 +33,7 @@ import ButtonComponent from './ButtonComponent';
 import HeadersToolBar from './HeadersToolBar';
 import DividerToolBar from './DividerToolBar';
 import MenuToolBar from './MenuToolBar';
-
+import ImageToolBar from './ImageToolBar';
 
 function App() {
 
@@ -152,7 +152,7 @@ function App() {
 
   const [desginElement, setDesignElement] = useState("contents");
 
-  const [componentActive, setComponentActive] = useState("menu");
+  const [componentActive, setComponentActive] = useState("image");
 
   const [componentHover, setComponentHover] = useState(false);
 
@@ -1139,6 +1139,14 @@ function App() {
                 closeComponent={makeComponentDeactive}
                 deleteComponent={deleteComponent}
               ></MenuToolBar>
+            }
+            {(componentActive=="image")&&
+              <ImageToolBar
+                closeComponent={makeComponentDeactive}
+                deleteComponent={deleteComponent}
+              >
+
+              </ImageToolBar>
             }
           </>
         }
