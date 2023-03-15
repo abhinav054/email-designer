@@ -1,7 +1,8 @@
 import Remove from "./images/remove.png";
 import AddIcon from "./images/add_icon.png";
 
-const FontSizer = ({val, setval})=>{
+const FontSizer = ({val, setval, max , min, increment})=>{
+
     return(
         <div className='font-sizer'>
             <div 
@@ -16,7 +17,7 @@ const FontSizer = ({val, setval})=>{
                 onClick={()=>
                             {
                                 let v = parseFloat(val);
-                                v = v-1;
+                                v = v-parseFloat(increment);
                                 setval(v);
                             }
                         }
@@ -24,8 +25,8 @@ const FontSizer = ({val, setval})=>{
                 <img style={{width: "15px",height: "15px"}} src={Remove}></img>
             </div>
                 <input  style={{ height: "24px",border: "2px", "text-align": "center"}} 
-                        min="0" 
-                        max="90" 
+                        min={min} 
+                        max={max} 
                         type="number" 
                         value={val} 
                         onChange={(e)=>{setval(e.target.value)}}></input>
@@ -41,7 +42,7 @@ const FontSizer = ({val, setval})=>{
                 onClick={()=>
                             {
                                 let v = parseFloat(val);
-                                v = v+1;
+                                v = v+parseFloat(increment);
                                 setval(v);
                             }
                         }

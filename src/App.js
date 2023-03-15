@@ -28,12 +28,14 @@ import ButtonToolbar from './ButtonToolbar';
 import PaddingResizer from './PaddingResizer';
 import * as _ from "lodash";
 import BorderResizer from './BorderResizer';
-import { rowStyle, columnStyle , ButtonStyle} from './StyleConsts';
+import { rowStyle, columnStyle , ButtonStyle, HeaderStyle} from './StyleConsts';
 import ButtonComponent from './ButtonComponent';
 import HeadersToolBar from './HeadersToolBar';
 import DividerToolBar from './DividerToolBar';
 import MenuToolBar from './MenuToolBar';
 import ImageToolBar from './ImageToolBar';
+import HtmlToolBar from './HtmlToolBar';
+import HeaderComponent from './HeaderComponent';
 
 function App() {
 
@@ -152,7 +154,7 @@ function App() {
 
   const [desginElement, setDesignElement] = useState("contents");
 
-  const [componentActive, setComponentActive] = useState("image");
+  const [componentActive, setComponentActive] = useState("");
 
   const [componentHover, setComponentHover] = useState(false);
 
@@ -306,6 +308,31 @@ function App() {
       setRows(rowsCopy);
     }
 
+    if(elementDragged=="header"){
+      let rowsCopy = [...rows];
+      let componentlength = rowsCopy[elementOver.index].columns[elementOver.column].components.length;
+      rowsCopy[elementOver.index].columns[elementOver.column].components.push(
+        {
+          "type": "header",
+          "active": true,
+          "style":{
+            ...HeaderStyle
+          },
+          "settings":{
+            "type": "h1"
+          }
+        }
+      )
+      makeComponentDeactive();
+      setActiveComponentSettings({
+        rowIndex: elementOver.index,
+        columnIndex: elementOver.column,
+        componentIndex: componentlength
+      })
+      setRows(rowsCopy);
+      setComponentActive("header");
+    }
+
 
   }
 
@@ -448,9 +475,6 @@ function App() {
     setRows(rowsCopy);
   }
 
-
-
-
   const toggleColumns = (columns)=>{
     let rowsCopy = [...rows];
     let activeRow = rowsCopy[rowActiveIndex];
@@ -492,10 +516,23 @@ function App() {
       componentCopy.active = true;
       setComponentActive("textbox");
     }
-    rowsCopy[rowindex].columns[columnindex].components[componentindex] = componentCopy;
-    if(activeComponentSettings.rowIndex!=rowindex||activeComponentSettings.columnIndex!=columnindex||activeComponentSettings.columnIndex!=componentindex){
-      makeComponentDeactive()
+    if(rowsCopy[rowindex].columns[columnindex].components[componentindex].type=="button"){
+      componentCopy.active = true;
+      setComponentActive("button")
     }
+    if(rowsCopy[rowindex].columns[columnindex].components[componentindex].type=="header"){
+      componentCopy.active = true;
+      setComponentActive("header");
+    }
+    
+    if(activeComponentSettings.rowIndex!=rowindex||activeComponentSettings.columnIndex!=columnindex||activeComponentSettings.columnIndex!=componentindex){
+      rowsCopy = makeComponentDeactiveRows(rowsCopy);
+    }
+    
+    
+    rowsCopy[rowindex].columns[columnindex].components[componentindex] = componentCopy;
+
+
     let activecomponentsettings = {
       rowIndex: rowindex,
       columnIndex: columnindex,
@@ -505,7 +542,17 @@ function App() {
 
     setRows(rowsCopy);
 
+  }
 
+
+  const makeComponentDeactiveRows = (rowsCopy)=>{
+    if(activeComponentSettings.rowIndex!=null&&activeComponentSettings.columnIndex!=null&activeComponentSettings.componentIndex!=null){
+      let componentCopy = {...rowsCopy[activeComponentSettings.rowIndex].columns[activeComponentSettings.columnIndex].components[activeComponentSettings.componentIndex]};
+      rowsCopy[activeComponentSettings.rowIndex].columns[activeComponentSettings.columnIndex].components[activeComponentSettings.componentIndex] = {...componentCopy,
+                                                                                                                                                    active: false
+                                                                                                                                                    }
+    }
+    return rowsCopy;
   }
 
   const transformTextBoxStyles = ()=>{
@@ -539,9 +586,11 @@ function App() {
 
   const makeComponentDeactive = ()=>{
     let rowsCopy = [...rows];
-
+    console.log("deactive called");
+    console.log(activeComponentSettings);
     if(activeComponentSettings.rowIndex!=null&&activeComponentSettings.columnIndex!=null&&activeComponentSettings.componentIndex!=null){
       let componentCopy = {...rowsCopy[activeComponentSettings.rowIndex].columns[activeComponentSettings.columnIndex].components[activeComponentSettings.componentIndex]};
+      // deactivate textbox
       if(rowsCopy[activeComponentSettings.rowIndex].columns[activeComponentSettings.columnIndex].components[activeComponentSettings.componentIndex].type=="textbox"){
         const html = stateToHTML(componentCopy.settings.editorState.getCurrentContent(), {inlineStyles:transformTextBoxStyles()});
         console.log(html);
@@ -549,18 +598,27 @@ function App() {
         componentCopy.settings.html = html;
         setComponentActive("");
       }
+      // deactivate button
       if(rowsCopy[activeComponentSettings.rowIndex].columns[activeComponentSettings.columnIndex].components[activeComponentSettings.componentIndex].type=="button"){
         componentCopy.active=false;
         setComponentActive("");
       }
+
+      //deactivate header
+      if(rowsCopy[activeComponentSettings.rowIndex].columns[activeComponentSettings.columnIndex].components[activeComponentSettings.componentIndex].type=="header"){
+        componentCopy.active = false;
+        setComponentActive("");
+      }
+
+
       rowsCopy[activeComponentSettings.rowIndex].columns[activeComponentSettings.columnIndex].components[activeComponentSettings.componentIndex] = componentCopy;
-      setRows(rowsCopy);
       let activeComponentSettingsCopy = {...activeComponentSettings,
                                          rowIndex: null,
                                          columnIndex: null,
                                          componentIndex: null
                                         }
       setActiveComponentSettings(activeComponentSettingsCopy);
+      setRows(rowsCopy);
 
     }
   }
@@ -751,11 +809,10 @@ function App() {
                                     </div>
                                   }
                                 </div>
-                            
-                            }
+                              }
                                 
-                            {c.type=="button"&&
-                              <div
+                              {c.type=="button"&&
+                                <div
                                 style={{
                                   "textAlign": c.style.textAlign,
                                   "width": c.style.width
@@ -802,9 +859,36 @@ function App() {
                                     "fontSize": c.style.fontSize    
                                   }
                                 }></ButtonComponent>
-                              </div>
-                              
-                            }
+                                </div>
+                              }
+
+                              {c.type=="header"&&
+                                <div
+                                  className={(c.hoveractive&&c.active==false)&&"component-active"}
+                                  onMouseEnter={()=>{
+                                      setComponentHover(true);
+                                      let rowsCopy = [...rows];
+                                      rowsCopy[index].columns[cindex].components[componentindex] = {...rowsCopy[index].columns[cindex].components[componentindex],
+                                                                                            hoveractive:true
+                                                                                           }
+                                      setRows(rowsCopy)
+                                    }}
+                                  onMouseLeave={()=>{
+                                      setComponentHover(false);
+                                      let rowsCopy = [...rows];
+                                      rowsCopy[index].columns[cindex].components[componentindex] = {...rowsCopy[index].columns[cindex].components[componentindex],
+                                                                                            hoveractive:false
+                                                                                           }
+                                      setRows(rowsCopy)
+                                  }}
+
+                                  onClick={()=>{
+                                      makeComponentActive(index, cindex, componentindex)
+                                  }}
+                                >
+                                  <HeaderComponent active={c.active} style={c.style} settings={c.settings}></HeaderComponent>
+                                </div>
+                              }
                             </>
                             )
                           })}
@@ -844,7 +928,7 @@ function App() {
                       <img className='design-element-img' src={Text}></img>
                     </div>
                     <div className='design-element' draggable
-                                                    onDragStart={()=>{onElementDragStart("heading")}}
+                                                    onDragStart={()=>{onElementDragStart("header")}}
                                                     onDragEnd = {()=>{onElementDragStop()}}
 
                     >
@@ -1116,7 +1200,7 @@ function App() {
                   deleteComponent={deleteComponent}
                   style={rows[activeComponentSettings.rowIndex].columns[activeComponentSettings.columnIndex].components[activeComponentSettings.componentIndex].style}
                   setStyle={setActiveComponentStyle}
-                  settings={rows[activeComponentSettings.rowIndex].columns[activeComponentSettings.columnIndex].components[activeComponentSettings.componentIndex].style}
+                  settings={rows[activeComponentSettings.rowIndex].columns[activeComponentSettings.columnIndex].components[activeComponentSettings.componentIndex].settings}
                   setSettings={setActiveComponentComponentSettings}
                   ></ButtonToolbar>
             }
@@ -1124,6 +1208,10 @@ function App() {
               <HeadersToolBar
                 closeComponent={makeComponentDeactive}
                 deleteComponent={deleteComponent}
+                style={rows[activeComponentSettings.rowIndex].columns[activeComponentSettings.columnIndex].components[activeComponentSettings.componentIndex].style} 
+                setStyle={setActiveComponentStyle} 
+                settings={rows[activeComponentSettings.rowIndex].columns[activeComponentSettings.columnIndex].components[activeComponentSettings.componentIndex].settings} 
+                setSettings={setActiveComponentComponentSettings}
               >
               </HeadersToolBar>
             }
@@ -1147,6 +1235,14 @@ function App() {
               >
 
               </ImageToolBar>
+            }
+            {(componentActive=="html")&&
+              <HtmlToolBar
+                closeComponent={makeComponentDeactive}
+                deleteComponent={deleteComponent}
+              >
+
+              </HtmlToolBar>
             }
           </>
         }

@@ -6,3 +6,11 @@
     border-bottom: 1px solid #eee;
 
 }
+
+.image-settings-alignment-options{
+    display: flex;
+}
+
+.image-settings-alignment-option{
+    padding: 4px;
+}

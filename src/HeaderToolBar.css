@@ -15,9 +15,17 @@
     border: 1px solid #eee;
 }
 
+.header-setting-type-option.active{
+    border: 2px solid #b0d2ef;
+}
+
 .header-setting-text-align-options{
     display: flex;
 }
 .header-setting-text-align-option{
     padding: 5px;
+}
+
+.header-setting-text-align-option.active{
+    border: 2px solid #b0d2ef;
 }
