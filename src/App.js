@@ -28,7 +28,7 @@ import ButtonToolbar from './ButtonToolbar';
 import PaddingResizer from './PaddingResizer';
 import * as _ from "lodash";
 import BorderResizer from './BorderResizer';
-import { rowStyle, columnStyle , ButtonStyle, HeaderStyle} from './StyleConsts';
+import { rowStyle, columnStyle , ButtonStyle, HeaderStyle, DividerStyle} from './StyleConsts';
 import ButtonComponent from './ButtonComponent';
 import HeadersToolBar from './HeadersToolBar';
 import DividerToolBar from './DividerToolBar';
@@ -36,6 +36,7 @@ import MenuToolBar from './MenuToolBar';
 import ImageToolBar from './ImageToolBar';
 import HtmlToolBar from './HtmlToolBar';
 import HeaderComponent from './HeaderComponent';
+import DividerComponent from './DividerComponent';
 
 function App() {
 
@@ -333,6 +334,31 @@ function App() {
       setComponentActive("header");
     }
 
+    if(elementDragged=="divider"){
+      let rowsCopy = [...rows];
+      let componentlength = rowsCopy[elementOver.index].columns[elementOver.column].components.length;
+      rowsCopy[elementOver.index].columns[elementOver.column].components.push(
+        {
+          "type": "divider",
+          "active": true,
+          "style":{
+            ...DividerStyle
+          },
+          "settings":{
+
+          }
+        }
+      )
+      makeComponentDeactive();
+      setActiveComponentSettings({
+        rowIndex: elementOver.index,
+        columnIndex: elementOver.column,
+        componentIndex: componentlength
+      })
+      setRows(rowsCopy);
+      setComponentActive("divider")
+    }
+
 
   }
 
@@ -524,6 +550,11 @@ function App() {
       componentCopy.active = true;
       setComponentActive("header");
     }
+
+    if(rowsCopy[rowindex].columns[columnindex].components[componentindex].type=="divider"){
+      componentCopy.active = true;
+      setComponentActive("divider");
+    }
     
     if(activeComponentSettings.rowIndex!=rowindex||activeComponentSettings.columnIndex!=columnindex||activeComponentSettings.columnIndex!=componentindex){
       rowsCopy = makeComponentDeactiveRows(rowsCopy);
@@ -606,6 +637,11 @@ function App() {
 
       //deactivate header
       if(rowsCopy[activeComponentSettings.rowIndex].columns[activeComponentSettings.columnIndex].components[activeComponentSettings.componentIndex].type=="header"){
+        componentCopy.active = false;
+        setComponentActive("");
+      }
+
+      if(rowsCopy[activeComponentSettings.rowIndex].columns[activeComponentSettings.columnIndex].components[activeComponentSettings.columnIndex].type=="divider"){
         componentCopy.active = false;
         setComponentActive("");
       }
@@ -888,6 +924,41 @@ function App() {
                                 >
                                   <HeaderComponent active={c.active} style={c.style} settings={c.settings}></HeaderComponent>
                                 </div>
+                              }
+                              {c.type=="divider"&&
+                                <div
+                                  style={{
+                                    display: "flex",
+                                    justifyContent: c.style.justifyContent
+                                  }}
+                                  className={(c.hoveractive&&c.active==false)&&"component-active"}
+                                  onMouseEnter={()=>{
+                                    setComponentHover(true);
+                                    let rowsCopy = [...rows];
+                                    rowsCopy[index].columns[cindex].components[componentindex] = {...rowsCopy[index].columns[cindex].components[componentindex],
+                                                                                          hoveractive:true
+                                                                                         }
+                                    setRows(rowsCopy)
+                                  }}
+                                  onMouseLeave={()=>{
+                                    setComponentHover(false);
+                                    let rowsCopy = [...rows];
+                                    rowsCopy[index].columns[cindex].components[componentindex] = {...rowsCopy[index].columns[cindex].components[componentindex],
+                                                                                          hoveractive:false
+                                                                                         }
+                                    setRows(rowsCopy)
+                                  }}
+
+                                  onClick={()=>{
+                                    makeComponentActive(index, cindex, componentindex)
+                                  }}
+                                >
+                                  <DividerComponent style={{
+                                    width: c.style.width,
+                                    border: c.style.border
+                                  }}></DividerComponent>
+                                </div>
+
                               }
                             </>
                             )
@@ -1219,6 +1290,8 @@ function App() {
               <DividerToolBar
                 closeComponent={makeComponentDeactive}
                 deleteComponent={deleteComponent}
+                style={rows[activeComponentSettings.rowIndex].columns[activeComponentSettings.columnIndex].components[activeComponentSettings.componentIndex].style} 
+                setStyle={setActiveComponentStyle}
               >
               </DividerToolBar>
             }

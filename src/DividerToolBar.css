@@ -13,3 +13,7 @@
 .divider-setting-align-option{
     padding: 5px;
 }
+
+.divider-setting-align-option.active{
+    border: 2px solid #b0d2ef;
+}

@@ -104,3 +104,9 @@ export const Header3Style = {
 export const Header4Style = {
     "fontSize": 16
 }
+
+export const DividerStyle = {
+    width: "80%",
+    border: "1px solid #eee",
+    justifyContent: "center"
+}
