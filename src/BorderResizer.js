@@ -402,7 +402,7 @@ const BorderResizer = ({
                         </div>
                     </div>
                     <div className='border-details-row'>
-                        <FontSizer val={getAllBorderVal()} setval={setAllBorderVal}>
+                        <FontSizer val={getAllBorderVal()} setval={setAllBorderVal} min={1} max={100} increment={1}>
 
                         </FontSizer>
                         <div className="border-color-picker">
@@ -429,7 +429,7 @@ const BorderResizer = ({
                             </div>
                         </div>
                         <div className="border-details-row">
-                            <FontSizer val={getTopBorderVal()} setval={setTopBorderVal}>
+                            <FontSizer val={getTopBorderVal()} setval={setTopBorderVal} min={1} max={100} increment={1}>
 
                             </FontSizer>
                             <div className="border-color-picker">
@@ -451,7 +451,7 @@ const BorderResizer = ({
                             </div>
                         </div>
                         <div className="border-details-row">
-                            <FontSizer val={getRightBorderVal()} setval={setRightBorderVal}>
+                            <FontSizer val={getRightBorderVal()} setval={setRightBorderVal} min={1} max={100} increment={1}>
 
                             </FontSizer>
                             <div className="border-color-picker">
@@ -475,7 +475,7 @@ const BorderResizer = ({
                             </div>
                         </div>
                         <div className="border-details-row">
-                            <FontSizer val={getBottomBorderVal()} setval={setBottomBorderVal}>
+                            <FontSizer val={getBottomBorderVal()} setval={setBottomBorderVal} min={1} max={100} increment={1}>
 
                             </FontSizer>
                             <div className="border-color-picker">
@@ -497,7 +497,7 @@ const BorderResizer = ({
                             </div>
                         </div>
                         <div className="border-details-row">
-                            <FontSizer val={getLeftBorderVal()} onChange={setLeftBorderVal}>
+                            <FontSizer val={getLeftBorderVal()} onChange={setLeftBorderVal} min={1} max={100} increment={1}>
 
                             </FontSizer>
                             <div className="border-color-picker">

@@ -14,3 +14,7 @@
 .image-settings-alignment-option{
     padding: 4px;
 }
+
+.image-settings-alignment-option.active{
+    border: 2px solid #b0d2ef;
+}

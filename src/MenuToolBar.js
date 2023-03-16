@@ -18,29 +18,29 @@ import FormatAlignCenter from "./images/format_align_center.png";
 import GeneralSettings from "./ComponentGeneralSettings";
 
 
-const MenuToolBar = ({closeComponent, deleteComponent})=>{
+const MenuToolBar = ({closeComponent, deleteComponent, style, setStyle,menuBarStyle , setMenuBarStyle, settings, setSettings})=>{
 
 
-    const [style, setStyle] = useState({...MenuItemStyle});
+    // const [style, setStyle] = useState({...MenuItemStyle});
     
 
-    const [menuItems, setMenuItems] = useState([
-        {
-            "text": "Page",
-            "settings":{
-                "actionSelected": "open_website",
-                "actionUrl": "",
-                "actionUrlTarget": "new_tab",
-                "phoneNumber": "",
-                "mailTo": "",
-                "subject": "",
-                "body": ""
-            }
-        }
-    ]);
+    // const [menuItems, setMenuItems] = useState([
+    //     {
+    //         "text": "Page",
+    //         "settings":{
+    //             "actionSelected": "open_website",
+    //             "actionUrl": "",
+    //             "actionUrlTarget": "new_tab",
+    //             "phoneNumber": "",
+    //             "mailTo": "",
+    //             "subject": "",
+    //             "body": ""
+    //         }
+    //     }
+    // ]);
 
     const addMenuItem = ()=>{
-        let menuItemsCopy = [...menuItems];
+        let menuItemsCopy = [...settings.menuItems];
         menuItemsCopy.push({
             "text": "Page",
             "settings":{
@@ -53,81 +53,159 @@ const MenuToolBar = ({closeComponent, deleteComponent})=>{
                 "body": ""
             }
         })
-        setMenuItems(menuItemsCopy);
+        let settingsCopy = {...settings,
+                            menuItems: menuItemsCopy
+                           }
+        setSettings(settingsCopy);
     }
 
     const setMenuItemText = (val, index)=>{
-        let menuItemsCopy = [...menuItems];
+        let menuItemsCopy = [...settings.menuItems];
         menuItemsCopy[index].text = val;
-        setMenuItems(menuItemsCopy);
+        let settingsCopy = {...settings,
+                            menuItems: menuItemsCopy
+                            }
+        setSettings(settingsCopy);
     }
 
 
     const setMenuItemActionSelected = (val, index)=>{
-        let menuItemsCopy = [...menuItems];
+        let menuItemsCopy = [...settings.menuItems];
         menuItemsCopy[index].settings = {...menuItemsCopy[index].settings,
                                          actionSelected: val
                                         }
-        setMenuItems(menuItemsCopy)
+        let settingsCopy = {...settings,
+                            menuItems: menuItemsCopy
+                            }
+        setSettings(settingsCopy);
     }
 
     const setMenuItemUrl = (val, index)=>{
-        let menuItemsCopy = [...menuItems];
+        let menuItemsCopy = [...settings.menuItems];
         menuItemsCopy[index].settings = {...menuItemsCopy[index].settings,
                                          actionUrl: val 
                                         }
-        setMenuItems(menuItemsCopy);
+        let settingsCopy = {...settings,
+                            menuItems: menuItemsCopy
+                            }
+        setSettings(settingsCopy);
     }
 
     const setMenuItemActionUrlTarget = (val, index)=>{
-        let menuItemsCopy = [...menuItems];
+        let menuItemsCopy = [...settings.menuItems];
         menuItemsCopy[index].settings = {...menuItemsCopy[index].settings,
                                          actionUrlTarget: val
                                         }
-        setMenuItems(menuItemsCopy)
+        let settingsCopy = {...settings,
+                            menuItems: menuItemsCopy  
+                           }
+        setSettings(settingsCopy)
     }
 
     const setMenuItemPhoneNumber = (val, index)=>{
-        let menuItemsCopy = [...menuItems];
+        let menuItemsCopy = [...settings.menuItems];
         menuItemsCopy[index].settings = {...menuItemsCopy[index].settings,
                                          phoneNumber: val
                                         }
-        setMenuItems(menuItemsCopy);
+        let settingsCopy = {...settings,
+                            menuItems: menuItemsCopy
+                           }
+        setSettings(settingsCopy);
     }
 
     const setMenuItemMailTo = (val, index)=>{
-        let menuItemsCopy = [...menuItems];
+        let menuItemsCopy = [...settings.menuItems];
         menuItemsCopy[index].settings = {...menuItemsCopy[index].settings,
                                          mailTo: val
                                         }
-        setMenuItems(menuItemsCopy);
+        let settingsCopy = {...settings,
+                            menuItems: menuItemsCopy
+                            }
+        setSettings(settingsCopy);
     }
 
     const setMenuItemSubject = (val, index)=>{
-        let menuItemsCopy = [...menuItems];
+        let menuItemsCopy = [...settings.menuItems];
         menuItemsCopy[index].settings = {...menuItemsCopy[index].settings,
                                          subject: val
                                         }
-        setMenuItems(menuItemsCopy);
+        let settingsCopy = {...settings,
+                            menuItems: menuItemsCopy
+                            }
+        setSettings(settingsCopy)
     }
 
     const setMenuItemBody = (val, index)=>{
-        let menuItemsCopy = [...menuItems];
+        let menuItemsCopy = [...settings.menuItems];
         menuItemsCopy[index].settings = {...menuItemsCopy[index].settings,
                                          body: val
                                         }
-        setMenuItems(menuItemsCopy);
+        let settingsCopy = {...settings,
+                            menuItems: menuItemsCopy
+                            }
+        setSettings(settingsCopy);
     }
 
     const deleteMenuItem = (index)=>{
-        let menuItemsCopy = [...menuItems];
+        let menuItemsCopy = [...settings.menuItems];
         menuItemsCopy.splice(index,1);
-        setMenuItems(menuItemsCopy);
+        let settingsCopy = {...settings,
+                            menuItems: menuItemsCopy
+                            }
+        setSettings(settingsCopy);
     }
 
-    const setAlignment = ()=>{
-
+    const setTextColor = (val)=>{
+        let styleCopy = {...style,
+                         color: val
+                        }
+        setStyle(styleCopy)
     }
+
+    const setBackgroundColor = (val)=>{
+        let styleCopy = {...style,
+                         backgroundColor: val
+                        }
+        setStyle(styleCopy);
+    }
+
+    const setFontFamily = (val)=>{
+        let styleCopy = {...style,
+                         fontFamily: val
+                        }
+        setStyle(styleCopy);
+    }
+
+    const setFontWeight = (val)=>{
+        let styleCopy = {...style,
+                         fontWeight: val
+                        }
+        setStyle(styleCopy);
+    }
+
+    const setFontSize = (val)=>{
+        let styleCopy = {...style,
+                         fontSize: val
+                        }
+        setStyle(styleCopy)
+    }
+
+    const setMenuBarAlignment = (val)=>{
+        let styleCopy = {...menuBarStyle,
+                         justifyContent: val
+                        }
+        setMenuBarStyle(styleCopy);
+    }
+
+    const setMenuBarBackgroundColor = (val)=>{
+        let styleCopy = {...menuBarStyle,
+                         backgroundColor: val
+                        };
+        setMenuBarStyle(styleCopy);
+    }
+
+
+    
 
     const actionsType = [
         {"label": "Open Website", "value": "open_website"},
@@ -144,9 +222,9 @@ const MenuToolBar = ({closeComponent, deleteComponent})=>{
                         MENU ITEMS
                     </div>
                     <div className="menu-settings-add-row">
-                        {menuItems.length>0&&
+                        {settings.menuItems.length>0&&
                             <>
-                                {menuItems.map((mi, index)=>{
+                                {settings.menuItems.map((mi, index)=>{
                                     return(
                                         <div className="menu-item-container">
                                             <div className="menu-item-delete-row">
@@ -213,7 +291,7 @@ const MenuToolBar = ({closeComponent, deleteComponent})=>{
                                                             <div className="button-input-url-tag">
                                                                 Mail To
                                                             </div>
-                                                            <input className="button-input-url" value={mi.settings.mailTo} onChange={(e)=>{setMenuItemPhoneNumber(e.target.value, index)}}></input>
+                                                            <input className="button-input-url" value={mi.settings.mailTo} onChange={(e)=>{setMenuItemMailTo(e.target.value, index)}}></input>
                                                         </div>
                                                         <div className="button-action-input-url">
                                                             <div className="button-input-url-tag">
@@ -255,18 +333,18 @@ const MenuToolBar = ({closeComponent, deleteComponent})=>{
                     </div>
                     <div className="menu-item-setting-row">
                         <div>Text Color</div>
-                        <PopoverPicker></PopoverPicker>
+                        <PopoverPicker color={style.color} onChange={setTextColor}></PopoverPicker>
                     </div>
                     <div className="menu-item-setting-row">
                         <div>Background Color</div>
-                        <PopoverPicker></PopoverPicker>
+                        <PopoverPicker color={style.backgroundColor} onChange={setBackgroundColor}></PopoverPicker>
                     </div>
                     <div className="menu-item-setting-row">
                         <div>
                             Font Family
                         </div>
                         <div>
-                            <select value={""} onChange={(e)=>{""}}>
+                            <select value={style.fontFamily} onChange={(e)=>{setFontFamily(e.target.value)}}>
                                 {availableFontFamily.map((ff)=>{
                                     return(
                                         <option value={ff.cssVal}>{ff.label}</option>
@@ -280,7 +358,7 @@ const MenuToolBar = ({closeComponent, deleteComponent})=>{
                             Font Weight
                         </div>
                         <div>
-                            <select value={""} onChange={(e)=>{}}>
+                            <select value={style.fontWeight} onChange={(e)=>{setFontWeight(e.target.value)}}>
                                 {availableFontWeights.map((fw)=>{
                                     return (
                                         <option value={fw.value}>{fw.label}</option>
@@ -294,7 +372,7 @@ const MenuToolBar = ({closeComponent, deleteComponent})=>{
                         <div>
                             Font Size
                         </div>
-                        <FontSizer></FontSizer>
+                        <FontSizer val={style.fontSize} setval={setFontSize} min={1} max={100} increment={1}></FontSizer>
                     </div>
                     <div className="menu-item-setting-options">
                         <PaddingResizer style={style} setStyle={setStyle}></PaddingResizer>
@@ -308,19 +386,22 @@ const MenuToolBar = ({closeComponent, deleteComponent})=>{
                     <div className="menu-item-setting-options">
                         <MarginResizer style={style} setStyle={setStyle}></MarginResizer>
                     </div>
+                    /**
+                      Menu bar styles , are seperately maintained then the styles object of the component
+                     */
                     <div className="content-settings-row-header">
                         Menu Bar Styles
                     </div>
                     <div className="menu-bar-settings-row">
                         <div>Item Alignment</div>
                         <div className="menu-bar-item-alignment-options">
-                            <div className="menu-bar-item-alignment-option" onClick={()=>{setAlignment("left")}}>
+                            <div className={menuBarStyle.justifyContent=="left"?"menu-bar-item-alignment-option active":"menu-bar-item-alignment-option"} onClick={()=>{setMenuBarAlignment("left")}}>
                                 <img style={{width: 24, height: 24}} src={FormatAlignLeft}></img>
                             </div>
-                            <div className="menu-bar-item-alignment-option" onClick={()=>{setAlignment("center")}}>
+                            <div className={menuBarStyle.justifyContent=="center"?"menu-bar-item-alignment-option active":"menu-bar-item-alignment-option"} onClick={()=>{setMenuBarAlignment("center")}}>
                                 <img style={{width: 24, height: 24}} src={FormatAlignCenter}></img>
                             </div>
-                            <div className="menu-bar-item-alignment-option" onClick={()=>{setAlignment("right")}}>
+                            <div className={menuBarStyle.justifyContent=="right"?"menu-bar-item-alignment-option active":"menu-bar-item-alignment-option"} onClick={()=>{setMenuBarAlignment("right")}}>
                                 <img style={{width: 24, height: 24}} src={FormatAlignRight}></img>
                             </div>
                         </div>
@@ -329,7 +410,7 @@ const MenuToolBar = ({closeComponent, deleteComponent})=>{
                         <div>
                             Background Color
                         </div>
-                        <PopoverPicker></PopoverPicker>
+                        <PopoverPicker color={menuBarStyle.backgroundColor} onChange={setMenuBarBackgroundColor}></PopoverPicker>
                     </div>
                 </div>
 

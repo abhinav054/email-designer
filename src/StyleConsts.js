@@ -57,7 +57,7 @@ export const MenuItemStyle = {
     "borderTopRightRadius": 4,
     "borderBottomLeftRadius": 4,
     "borderBottomRightRadius": 4,
-    "background": "#2196F3",
+    "backgroundColor": "#2196F3",
     "color": "#000000",
     "textAlign": "center",
     "lineHeight": 1.2,
@@ -66,7 +66,12 @@ export const MenuItemStyle = {
     "marginBottom": 0,
     "marginRight": 0,
     "marginLeft": 0
+}
 
+export const MenuBarStyle = {
+    "backgroundColor": "#ffffff",
+    "justifyContent": "center",
+    "display": "flex"
 }
 
 
@@ -108,5 +113,11 @@ export const Header4Style = {
 export const DividerStyle = {
     width: "80%",
     border: "1px solid #eee",
+    justifyContent: "center"
+}
+
+export const ImageStyle = {
+    width: "100%",
+    display: "flex",
     justifyContent: "center"
 }

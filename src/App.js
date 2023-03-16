@@ -28,7 +28,7 @@ import ButtonToolbar from './ButtonToolbar';
 import PaddingResizer from './PaddingResizer';
 import * as _ from "lodash";
 import BorderResizer from './BorderResizer';
-import { rowStyle, columnStyle , ButtonStyle, HeaderStyle, DividerStyle} from './StyleConsts';
+import { rowStyle, columnStyle , ButtonStyle, HeaderStyle, DividerStyle, MenuItemStyle, MenuBarStyle, ImageStyle} from './StyleConsts';
 import ButtonComponent from './ButtonComponent';
 import HeadersToolBar from './HeadersToolBar';
 import DividerToolBar from './DividerToolBar';
@@ -37,6 +37,8 @@ import ImageToolBar from './ImageToolBar';
 import HtmlToolBar from './HtmlToolBar';
 import HeaderComponent from './HeaderComponent';
 import DividerComponent from './DividerComponent';
+import MenuComponent from './MenuComponent';
+import ImageComponent from './ImageComponent';
 
 function App() {
 
@@ -159,6 +161,9 @@ function App() {
 
   const [componentHover, setComponentHover] = useState(false);
 
+  const [showDragSpan, setShowDragSpan] = useState(false);
+
+
   const [activeComponentSettings, setActiveComponentSettings] = useState({
     rowIndex: null,
     columnIndex: null,
@@ -205,6 +210,15 @@ function App() {
     event.preventDefault();
   }
 
+  const handleDragEnter = ()=>{
+    setShowDragSpan(true);
+  }
+
+  const handleDragExit = ()=>{
+    setShowDragSpan(false);
+  }
+
+
   const handleDrop = (index, column)=>{
     let elementOver = {
       index: index,
@@ -243,7 +257,12 @@ function App() {
   }
 
   const onElementDragStop = ()=>{
-    console.log(elementDragged);
+    
+    if(elementOver.index==null&&elementOver.column==null){
+      
+      return
+    }
+
     if(elementDragged=="textbox"){
       let rowsCopy = [...rows];
       let componentlength = rowsCopy[elementOver.index].columns[elementOver.column].components.length;
@@ -358,6 +377,82 @@ function App() {
       setRows(rowsCopy);
       setComponentActive("divider")
     }
+
+    if(elementDragged=="menu"){
+      let rowsCopy = [...rows];
+      let componentlength = rowsCopy[elementOver.index].columns[elementOver.column].components.length;
+      rowsCopy[elementOver.index].columns[elementOver.column].components.push(
+        {
+          "type": "menu",
+          "active": true,
+          "style":{
+            ...MenuItemStyle
+          },
+          "menuBarStyle":{
+            ...MenuBarStyle
+          },
+          "settings":{
+            "menuItems":[]
+          }
+        }
+      )
+
+      makeComponentDeactive();
+      setActiveComponentSettings({
+        rowIndex: elementOver.index,
+        columnIndex: elementOver.column,
+        componentIndex: componentlength
+      });
+      setRows(rowsCopy);
+      setComponentActive("menu");
+    }
+
+    if(elementDragged=="image"){
+      let rowsCopy = [...rows];
+      let componentlength = rowsCopy[elementOver.index].columns[elementOver.column].components.length;
+      rowsCopy[elementOver.index].columns[elementOver.column].components.push(
+        {
+          "type": "image",
+          "active": true,
+          "style":{
+            ...ImageStyle
+          },
+          "settings":{
+            "url": "",
+            "alttext": ""
+          }
+        }
+      )
+      makeComponentDeactive();
+      setActiveComponentSettings({
+        rowIndex: elementOver.index,
+        columnIndex: elementOver.column,
+        componentIndex: componentlength
+      })
+      setRows(rowsCopy);
+      setComponentActive("image");
+    }
+    if(elementDragged=="html"){
+      let rowsCopy = [...rows];
+      let componentlength = rowsCopy[elementOver.index].columns[elementOver.column].components.length;
+      rowsCopy[elementOver.index].columns[elementOver.column].components.push({
+        "type": "html",
+        "active": true,
+        "settings":{
+          "html": ""
+        }
+      })
+      makeComponentDeactive()
+      setActiveComponentSettings({
+        rowIndex: elementOver.index,
+        columnIndex: elementOver.column,
+        componentIndex: componentlength
+      })
+      setRows(rowsCopy);
+      setComponentActive("html");
+    }
+
+
 
 
   }
@@ -556,6 +651,23 @@ function App() {
       setComponentActive("divider");
     }
     
+    if(rowsCopy[rowindex].columns[columnindex].components[componentindex].type=="menu"){
+      componentCopy.active = true;
+      setComponentActive("menu");
+    }
+
+    if(rowsCopy[rowindex].columns[columnindex].components[componentindex].type=="image"){
+      componentCopy.active = true;
+      setComponentActive("image");
+    }
+
+    if(rowsCopy[rowindex].columns[columnindex].components[componentindex].type=="html"){
+      componentCopy.active = false;
+      setComponentActive("html"); 
+    }
+
+
+
     if(activeComponentSettings.rowIndex!=rowindex||activeComponentSettings.columnIndex!=columnindex||activeComponentSettings.columnIndex!=componentindex){
       rowsCopy = makeComponentDeactiveRows(rowsCopy);
     }
@@ -641,7 +753,22 @@ function App() {
         setComponentActive("");
       }
 
-      if(rowsCopy[activeComponentSettings.rowIndex].columns[activeComponentSettings.columnIndex].components[activeComponentSettings.columnIndex].type=="divider"){
+      if(rowsCopy[activeComponentSettings.rowIndex].columns[activeComponentSettings.columnIndex].components[activeComponentSettings.componentIndex].type=="divider"){
+        componentCopy.active = false;
+        setComponentActive("");
+      }
+
+      if(rowsCopy[activeComponentSettings.rowIndex].columns[activeComponentSettings.columnIndex].components[activeComponentSettings.componentIndex].type=="menu"){
+        componentCopy.active = false;
+        setComponentActive("");
+      }
+
+      if(rowsCopy[activeComponentSettings.rowIndex].columns[activeComponentSettings.columnIndex].components[activeComponentSettings.componentIndex].type=="image"){
+        componentCopy.active = false;
+        setComponentActive("");
+      }
+
+      if(rowsCopy[activeComponentSettings.rowIndex].columns[activeComponentSettings.columnIndex].components[activeComponentSettings.componentIndex].type=="html"){
         componentCopy.active = false;
         setComponentActive("");
       }
@@ -655,7 +782,6 @@ function App() {
                                         }
       setActiveComponentSettings(activeComponentSettingsCopy);
       setRows(rowsCopy);
-
     }
   }
 
@@ -674,6 +800,7 @@ function App() {
       rowsCopy[rowindex].columns[columnindex].active = true;
       setRows(rowsCopy);
   }
+
 
 
 
@@ -700,6 +827,12 @@ function App() {
   //   let style = {...rowsCopy[activeComponentSettings.rowIndex].columns[activeComponentSettings.columnIndex].components[activeComponentSettings.componentIndex]};
   //   return style;
   // }
+
+  const setMenuBarStyle = (style)=>{
+    let rowsCopy = [...rows];
+    rowsCopy[activeComponentSettings.rowIndex].columns[activeComponentSettings.columnIndex].components[activeComponentSettings.componentIndex].menuBarStyle = style;
+    setRows(rowsCopy);
+  }
 
   const setActiveComponentStyle = (style)=>{
     let rowsCopy = [...rows];
@@ -792,7 +925,13 @@ function App() {
                   <div style={column.active?{width:column.style.width, border: "1px dashed blue"}:{width:column.style.width}}>
                     <div style={{...column.style,width:"100%"}} 
                         onDrop={()=>{handleDrop(index,cindex)}}
-                        onDragOver={handleDragOver}
+                        onDragOver = {handleDragOver}
+                        onDragEnter={
+                          handleDragEnter
+                        }
+
+                        onDragExit={handleDragExit}
+
                     >
                     {column.components.length==0&&
                       <div className="column-content-placeholder">
@@ -960,6 +1099,89 @@ function App() {
                                 </div>
 
                               }
+
+                              {c.type=="menu"&&
+                                <div
+                                  className={(c.hoveractive&&c.active==false)&&"component-active"}
+                                  onMouseEnter={()=>{
+                                    setComponentHover(true);
+                                    let rowsCopy = [...rows];
+                                    rowsCopy[index].columns[cindex].components[componentindex] = {...rowsCopy[index].columns[cindex].components[componentindex],
+                                                                                          hoveractive:true
+                                                                                         }
+                                    setRows(rowsCopy)
+                                  }}
+                                  onMouseLeave={()=>{
+                                    setComponentHover(false);
+                                    let rowsCopy = [...rows];
+                                    rowsCopy[index].columns[cindex].components[componentindex] = {...rowsCopy[index].columns[cindex].components[componentindex],
+                                                                                          hoveractive:false
+                                                                                         }
+                                    setRows(rowsCopy)
+                                  }}
+
+                                  onClick={()=>{
+                                    makeComponentActive(index, cindex, componentindex)
+                                  }}
+                                >
+                                  <MenuComponent style={c.style} settings={c.settings} menuBarStyle={c.menuBarStyle}></MenuComponent>
+                                </div>
+                              }
+                              {c.type=="image"&&
+                                <div
+                                  className={(c.hoveractive&&c.active==false)&&"component-active"}
+                                  onMouseEnter={()=>{
+                                    setComponentHover(true);
+                                    let rowsCopy = [...rows];
+                                    rowsCopy[index].columns[cindex].components[componentindex] = {...rowsCopy[index].columns[cindex].components[componentindex],
+                                                                                          hoveractive:true
+                                                                                         }
+                                    setRows(rowsCopy)
+                                  }}
+                                  onMouseLeave={()=>{
+                                    setComponentHover(false);
+                                    let rowsCopy = [...rows];
+                                    rowsCopy[index].columns[cindex].components[componentindex] = {...rowsCopy[index].columns[cindex].components[componentindex],
+                                                                                          hoveractive:false
+                                                                                         }
+                                    setRows(rowsCopy)
+                                  }}
+
+                                  onClick={()=>{
+                                    makeComponentActive(index, cindex, componentindex)
+                                  }}
+                                >
+                                  <ImageComponent style={c.style} settings={c.settings}></ImageComponent>
+                                </div>
+                              }
+                              {c.type=="html"&&
+
+                                <div
+                                  className={(c.hoveractive&&c.active==false)&&"component-active"}
+                                  onMouseEnter={()=>{
+                                      setComponentHover(true);
+                                      let rowsCopy = [...rows];
+                                      rowsCopy[index].columns[cindex].components[componentindex] = {...rowsCopy[index].columns[cindex].components[componentindex],
+                                                        hoveractive:true
+                                                       }
+                                      setRows(rowsCopy)
+                                  }}
+                                  onMouseLeave={()=>{
+                                      setComponentHover(false);
+                                      let rowsCopy = [...rows];
+                                      rowsCopy[index].columns[cindex].components[componentindex] = {...rowsCopy[index].columns[cindex].components[componentindex],
+                                                                                            hoveractive:false
+                                                                                          }
+                                      setRows(rowsCopy)
+                                  }}
+
+                                  onClick={()=>{
+                                    makeComponentActive(index, cindex, componentindex)
+                                  }}
+                                >
+                                  <div dangerouslySetInnerHTML={{__html: c.settings.html}}></div>
+                                  </div>
+                              }
                             </>
                             )
                           })}
@@ -997,6 +1219,8 @@ function App() {
                                                     onDragEnd = {()=>{onElementDragStop()}}
                                                     >
                       <img className='design-element-img' src={Text}></img>
+                      {}
+                      <span>Drop here</span>
                     </div>
                     <div className='design-element' draggable
                                                     onDragStart={()=>{onElementDragStart("header")}}
@@ -1299,12 +1523,22 @@ function App() {
               <MenuToolBar
                 closeComponent={makeComponentDeactive}
                 deleteComponent={deleteComponent}
+                style = {rows[activeComponentSettings.rowIndex].columns[activeComponentSettings.columnIndex].components[activeComponentSettings.componentIndex].style}
+                setStyle = {setActiveComponentStyle}
+                menuBarStyle = {rows[activeComponentSettings.rowIndex].columns[activeComponentSettings.columnIndex].components[activeComponentSettings.componentIndex].menuBarStyle}
+                setMenuBarStyle = {setMenuBarStyle}
+                settings={rows[activeComponentSettings.rowIndex].columns[activeComponentSettings.columnIndex].components[activeComponentSettings.componentIndex].settings} 
+                setSettings={setActiveComponentComponentSettings}
               ></MenuToolBar>
             }
             {(componentActive=="image")&&
               <ImageToolBar
                 closeComponent={makeComponentDeactive}
                 deleteComponent={deleteComponent}
+                style={rows[activeComponentSettings.rowIndex].columns[activeComponentSettings.columnIndex].components[activeComponentSettings.componentIndex].style}
+                setStyle = {setActiveComponentStyle}
+                settings={rows[activeComponentSettings.rowIndex].columns[activeComponentSettings.columnIndex].components[activeComponentSettings.componentIndex].settings} 
+                setSettings={setActiveComponentComponentSettings}
               >
 
               </ImageToolBar>
@@ -1313,6 +1547,8 @@ function App() {
               <HtmlToolBar
                 closeComponent={makeComponentDeactive}
                 deleteComponent={deleteComponent}
+                settings={rows[activeComponentSettings.rowIndex].columns[activeComponentSettings.columnIndex].components[activeComponentSettings.componentIndex].settings} 
+                setSettings={setActiveComponentComponentSettings}
               >
 
               </HtmlToolBar>

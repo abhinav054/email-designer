@@ -11,9 +11,8 @@ import { useState } from "react";
 import "./HtmlToolBar.css";
 import GeneralSettings from "./ComponentGeneralSettings";
 
-const HtmlToolBar = ({closeComponent, deleteComponent})=>{
+const HtmlToolBar = ({closeComponent, deleteComponent, settings, setSettings})=>{
 
-    const [val, setval] = useState("");
 
     const hightlightWithLineNumbers = (input, language) =>
         highlight(input, language)
@@ -30,8 +29,10 @@ const HtmlToolBar = ({closeComponent, deleteComponent})=>{
                 </div>
                 <div style={{minHeight: 300}}>
                 <Editor
-                    value={val}
-                    onValueChange={code => setval(code)}
+                    value={settings.html}
+                    onValueChange={html => setSettings({...settings,
+                                                        html:html
+                                                        })}
                     highlight={code =>
                         hightlightWithLineNumbers(code, languages.js)
                       }

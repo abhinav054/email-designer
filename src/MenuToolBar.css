@@ -89,3 +89,7 @@
 .menu-bar-item-alignment-option{
     padding: 4px;
 }
+
+.menu-bar-item-alignment-options.active{
+    border: 2px solid #b0d2ef;
+}

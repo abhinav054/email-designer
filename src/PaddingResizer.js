@@ -81,6 +81,9 @@ const PaddingResizer = ({
                     <FontSizer
                         val={style.paddingTop}
                         setval={setAllPadding}
+                        min={1}
+                        max={100}
+                        increment={1}
                     >
                     </FontSizer>
                 </div>
@@ -95,6 +98,9 @@ const PaddingResizer = ({
                             <FontSizer
                                 val={style.paddingTop}
                                 setval={setTopPadding}
+                                min={1}
+                                max={100}
+                                increment={1}
                             >
                             </FontSizer>
                         </div>
@@ -105,6 +111,9 @@ const PaddingResizer = ({
                             <FontSizer
                                 val={style.paddingRight}
                                 setval={setRightPadding}
+                                min={1}
+                                max={100}
+                                increment={1}
                             >
                             </FontSizer>
                         </div>
@@ -117,6 +126,9 @@ const PaddingResizer = ({
                             <FontSizer
                                 val={style.paddingBottom}
                                 setval={setBottomPadding}
+                                min={1}
+                                max={100}
+                                increment={1}
                             >
                             </FontSizer>
                         </div>
@@ -127,6 +139,9 @@ const PaddingResizer = ({
                             <FontSizer
                                 val={style.paddingLeft}
                                 setval={setLeftPadding}
+                                min={1}
+                                max={100}
+                                increment={1}
                             >
                             </FontSizer>
                         </div>

@@ -88,6 +88,9 @@ const BorderRadiusResizer = ({style, setStyle})=>{
                         <FontSizer
                             val={style.borderTopLeftRadius}
                             setval={setBorderTopLeftRadius}
+                            min={1}
+                            max={100}
+                            increment={1}
                         >
                         </FontSizer>
                     </div>
@@ -98,6 +101,9 @@ const BorderRadiusResizer = ({style, setStyle})=>{
                         <FontSizer
                             val={style.borderTopRightRadius}
                             setval={setBorderTopRightRadius}
+                            min={1}
+                            max={100}
+                            increment={1}
                         >
                         </FontSizer>
                     </div>
@@ -110,6 +116,9 @@ const BorderRadiusResizer = ({style, setStyle})=>{
                         <FontSizer
                             val={style.borderBottomLeftRadius}
                             setval={setBorderBottomLeftRadius}
+                            min={1}
+                            max={100}
+                            increment={1}
                         >
                         </FontSizer>
                     </div>
@@ -120,6 +129,9 @@ const BorderRadiusResizer = ({style, setStyle})=>{
                         <FontSizer
                             val={style.borderBottomLeftRadius}
                             setval={setBorderBottomLeftRadius}
+                            min={1}
+                            max={100}
+                            increment={1}
                         >
                         </FontSizer>
                     </div>
