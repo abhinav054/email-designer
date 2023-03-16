@@ -66,7 +66,7 @@ const ImageToolBar = ({closeComponent, deleteComponent, style, setStyle, setting
                         Width
                     </div>
                     <div>
-                        <FontSizer min={1} max={100} val={getWidth()} setval={setWidth}></FontSizer>        
+                        <FontSizer min={1} max={100} val={getWidth()} setval={setWidth} increment={1}></FontSizer>        
                     </div>
                 </div>
                 <div className="image-settings-row">
