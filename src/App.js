@@ -1219,8 +1219,6 @@ function App() {
                                                     onDragEnd = {()=>{onElementDragStop()}}
                                                     >
                       <img className='design-element-img' src={Text}></img>
-                      {}
-                      <span>Drop here</span>
                     </div>
                     <div className='design-element' draggable
                                                     onDragStart={()=>{onElementDragStart("header")}}
