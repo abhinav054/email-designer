@@ -40,109 +40,15 @@ import DividerComponent from './DividerComponent';
 import MenuComponent from './MenuComponent';
 import ImageComponent from './ImageComponent';
 
-function App() {
+function EmailDesigner({}) {
+
+  
 
 
-
-  const [customStyleState, setCustomStyleState] = useState({
-    STRIKETHROUGH: {
-      textDecoration: "line-through"
-    },
-    FONT_FAMILY_ARIAL:{
-      fontFamily: "Arial, sans-serif"
-    },
-    FONT_FAMILY_VERDANA:{
-      fontFamily: "Verdana, sans-serif"
-    },
-    FONT_FAMILY_TAHOMA:{
-      fontFamily: "Tahoma, sans-serif"
-    },
-    FONT_FAMILY_TREBUCHET_MS:{
-      fontFamily: "Trebuchet MS', sans-serif"
-    },
-    FONT_FAMILY_TIMES_NEW_ROMAN:{
-      fontFamily:"Times New Roman', serif"
-    },
-    FONT_FAMILY_GEORGIA:{
-      fontFamily: "Georgia, serif"
-    },
-    FONT_FAMILY_GARAMOND:{
-      fontFamily: "Garamond, serif"
-    },
-    FONT_FAMILY_COURIER_NEW:{
-      fontFamily: "Courier New', monospace"
-    },
-    FONT_FAMILY_BRUSH_SCRIPT_MT:{
-      fontFamily: "Brush Script MT, cursive"
-    },
-    FONT_SIZE_8:{
-      fontSize: "8px"
-    },
-    FONT_SIZE_9:{
-      fontSize: "9px"
-    },
-    FONT_SIZE_10:{
-      fontSize: "10px"
-    },
-    FONT_SIZE_11:{
-      fontSize: "11px"
-    },
-    FONT_SIZE_12:{
-      fontSize: "12px"
-    },
-    FONT_SIZE_14:{
-      fontSize: "14px"
-    },
-    FONT_SIZE_16:{
-      fontSize: "16px"
-    },
-    FONT_SIZE_18:{
-      fontSize: "18px"
-    },
-    FONT_SIZE_20:{
-      fontSize: "20px"
-    },
-    FONT_SIZE_22:{
-      fontSize: "22px"
-    },
-    FONT_SIZE_24:{
-      fontSize: "24px"
-    },
-    FONT_SIZE_26:{
-      fontSize: "26px"
-    },
-    FONT_SIZE_28:{
-      fontSize: "28px"
-    },
-    FONT_SIZE_36: {
-      fontSize: "36px"
-    },
-    FONT_SIZE_48:{
-      fontSize: "48px"
-    },
-    FONT_SIZE_72:{
-      fontSize: "72px"
-    },
-
-    COLOR_ffffff:{
-      color: "#ffffff"
-    },
-    COLOR_red: {
-      color: "rgba(255, 0, 0, 1.0)"
-    },
-    INIT_STYLE:{
-      color: "#000000",
-      fontSize: "14px",
-      fontFamily: "Arial, sans-serif"
-    }
-  })
 
   const [menuItemActive, setMenuItemActive] = useState("body");
 
-
-
   const [elementDragged, setElementDragged] = useState("");
-
 
   const [columnsettingsactive, setColumnsettingsactive] = useState(0);
 
@@ -154,7 +60,6 @@ function App() {
 
   const [detailRowPadding, setDetailRowPadding] = useState(false);
 
-
   const [desginElement, setDesignElement] = useState("contents");
 
   const [componentActive, setComponentActive] = useState("");
@@ -164,14 +69,34 @@ function App() {
   const [showDragSpan, setShowDragSpan] = useState(false);
 
 
+  const [activeRowCoordinates, setaActiveRowCoordinates] = useState({
+    rowindex:null,
+    columnindex: null,
+    componentindex: null,
+    type: "",
+    rowCoordinates:{
+      
+    }
+  });
+
+  const setComponentStyle = ()=>{
+
+
+  }
+
+  const setStyle = (style)=>{
+    let activeRowCoordinatesCopy = {...activeRowCoordinates};
+    while(activeRowCoordinatesCopy.rowCoordinates!=""){
+
+    }
+
+  }
+
   const [activeComponentSettings, setActiveComponentSettings] = useState({
     rowIndex: null,
     columnIndex: null,
     componentIndex: null
   })
-
-
-
 
   const [bodyStyles, setBodyStyles] = useState({
     "width": "1114px",
@@ -180,11 +105,6 @@ function App() {
     "fontSize": "20px",
     "color": "red"
   })
-
-
-
-
-
 
   const transformBodyStyles = (e, component)=>{
     let bodyStylesCopy = {...bodyStyles};
@@ -233,28 +153,7 @@ function App() {
     setElementDragged(elementName);
   }
 
-  const handleTextBoxStyleInit = ()=>{
-      let bodyFont = bodyStyles.fontSize;
-      let font_size_key = "FONT_SIZE_"+bodyFont.replace("px","");
-      let font_size_index = _.findIndex(Object.keys(customStyleState),(k)=>{return k==font_size_key});
-      let customStyleStateCopy = {...customStyleState};
-      if(font_size_index==-1){
-        customStyleStateCopy[font_size_key] = {
-          fontSize: bodyFont
-        }
-
-      }
-
-      let bodyTextColor = bodyStyles.color;
-      let text_color_key = "COLOR_"+bodyTextColor.replace("#","");
-      let text_color_index = _.findIndex(Object.keys(customStyleState),(k)=>{return k==text_color_key});
-      if(text_color_index==-1){
-        customStyleStateCopy[text_color_key]={
-          color: bodyTextColor
-        }
-      }
-      setCustomStyleState(customStyleStateCopy);
-  }
+  
 
   const onElementDragStop = ()=>{
     
@@ -281,16 +180,12 @@ function App() {
           "hoveractive": false
         }
       )
-
       makeComponentDeactive()
-
       setActiveComponentSettings({
         rowIndex: elementOver.index,
         columnIndex: elementOver.column,
         componentIndex: componentlength
       })
-
-
       setComponentActive("textbox");
       setRows(rowsCopy);
     }
@@ -323,7 +218,6 @@ function App() {
         columnIndex: elementOver.column,
         componentIndex: componentlength
       });
-
       setComponentActive("button");
       setRows(rowsCopy);
     }
@@ -432,6 +326,7 @@ function App() {
       setRows(rowsCopy);
       setComponentActive("image");
     }
+    
     if(elementDragged=="html"){
       let rowsCopy = [...rows];
       let componentlength = rowsCopy[elementOver.index].columns[elementOver.column].components.length;
@@ -452,7 +347,17 @@ function App() {
       setComponentActive("html");
     }
 
-
+    if(elementDragged=="column"){
+      let rowsCopy = [...rows];
+      let componentlength = rowsCopy[elementOver.index].columns[elementOver.column].components.length;
+      rowsCopy[elementOver.index].columns[elementOver.column].components.push({
+        "type": "columns",
+        "active": true,
+        "settings":{
+          "rows":[]      
+        }
+      })
+    }
 
 
   }
@@ -469,7 +374,7 @@ function App() {
       return setEditorState;      
   }
 
-  const [rowActive, setRowActive] = useState(false);
+  // const [rowActive, setRowActive] = useState(false);
 
   const [rowActiveIndex, setRowActiveIndex] = useState(null);
 
@@ -620,20 +525,16 @@ function App() {
     setRows(rowsCopy);
   }
 
-
   const deleteRow = (index)=>{
     let rowsCopy = [...rows];
     rowsCopy.splice(index,1);
     setRows(rowsCopy);
   }
 
-
   const makeComponentActive = (rowindex, columnindex, componentindex)=>{
     let rowsCopy = [...rows];
     let componentCopy = {...rowsCopy[rowindex].columns[columnindex].components[componentindex]};
     if(rowsCopy[rowindex].columns[columnindex].components[componentindex].type=="textbox"){
-      // let newEditorState = EditorState.createWithContent(convertFromHTML(componentCopy.html));
-      // componentCopy.editorState = newEditorState;
       componentCopy.active = true;
       setComponentActive("textbox");
     }
@@ -681,12 +582,12 @@ function App() {
       columnIndex: columnindex,
       componentIndex: componentindex
     }
+
     setActiveComponentSettings(activecomponentsettings);
 
     setRows(rowsCopy);
 
   }
-
 
   const makeComponentDeactiveRows = (rowsCopy)=>{
     if(activeComponentSettings.rowIndex!=null&&activeComponentSettings.columnIndex!=null&activeComponentSettings.componentIndex!=null){
@@ -697,20 +598,6 @@ function App() {
     }
     return rowsCopy;
   }
-
-  const transformTextBoxStyles = ()=>{
-      let customStyleStateCopy = {...customStyleState};
-      let newCustomStyle = {};
-      _.forOwn(customStyleStateCopy, (value, key)=>{
-        newCustomStyle[key] = {
-          style:value
-        }
-      })
-      return newCustomStyle;
-  }
-
-  
-
 
   const changeColumnBackground= (rowindex, columnindex)=>{
       const changeColor = (color,c)=>{
@@ -723,10 +610,6 @@ function App() {
       return changeColor;
   }
 
-
-
-
-
   const makeComponentDeactive = ()=>{
     let rowsCopy = [...rows];
     console.log("deactive called");
@@ -735,10 +618,7 @@ function App() {
       let componentCopy = {...rowsCopy[activeComponentSettings.rowIndex].columns[activeComponentSettings.columnIndex].components[activeComponentSettings.componentIndex]};
       // deactivate textbox
       if(rowsCopy[activeComponentSettings.rowIndex].columns[activeComponentSettings.columnIndex].components[activeComponentSettings.componentIndex].type=="textbox"){
-        const html = stateToHTML(componentCopy.settings.editorState.getCurrentContent(), {inlineStyles:transformTextBoxStyles()});
-        console.log(html);
         componentCopy.active = false;
-        componentCopy.settings.html = html;
         setComponentActive("");
       }
       // deactivate button
@@ -773,7 +653,6 @@ function App() {
         setComponentActive("");
       }
 
-
       rowsCopy[activeComponentSettings.rowIndex].columns[activeComponentSettings.columnIndex].components[activeComponentSettings.componentIndex] = componentCopy;
       let activeComponentSettingsCopy = {...activeComponentSettings,
                                          rowIndex: null,
@@ -785,24 +664,20 @@ function App() {
     }
   }
 
+  // const setEState = (rowindex, columnname, componentindex, e)=>{
+  //   let rowsCopy = [...rows];
+  //   let componentCopy = {...rowsCopy[rowindex].columns[columnname].components[componentindex]};
+  //   componentCopy.editorState = e;
+  //   rowsCopy[rowindex].columns[columnname].components[componentindex] = componentCopy;
+  //   setRows(rowsCopy)
 
-  const setEState = (rowindex, columnname, componentindex, e)=>{
-    let rowsCopy = [...rows];
-    let componentCopy = {...rowsCopy[rowindex].columns[columnname].components[componentindex]};
-    componentCopy.editorState = e;
-    rowsCopy[rowindex].columns[columnname].components[componentindex] = componentCopy;
-    setRows(rowsCopy)
+  // }
 
-  }
-
-  const makeColumnActive = (rowindex, columnindex)=>{
-      let rowsCopy = [...rows];
-      rowsCopy[rowindex].columns[columnindex].active = true;
-      setRows(rowsCopy);
-  }
-
-
-
+  // const makeColumnActive = (rowindex, columnindex)=>{
+  //     let rowsCopy = [...rows];
+  //     rowsCopy[rowindex].columns[columnindex].active = true;
+  //     setRows(rowsCopy);
+  // }
 
   const deleteComponent = ()=>{
     let rowsCopy = [...rows];
@@ -821,13 +696,6 @@ function App() {
   }
 
   
-
-  // const getActiveComponentStyle = ()=>{
-  //   let rowsCopy = [...rows];
-  //   let style = {...rowsCopy[activeComponentSettings.rowIndex].columns[activeComponentSettings.columnIndex].components[activeComponentSettings.componentIndex]};
-  //   return style;
-  // }
-
   const setMenuBarStyle = (style)=>{
     let rowsCopy = [...rows];
     rowsCopy[activeComponentSettings.rowIndex].columns[activeComponentSettings.columnIndex].components[activeComponentSettings.componentIndex].menuBarStyle = style;
@@ -847,14 +715,20 @@ function App() {
   }
 
 
+  const setRowActive = ()=>{
+
+  }
+
+
   return (
     <div className='App'>
       <div id="test" className="design-container">
-        <div id="main-body" style={bodyStyles}>
+        
           {rows.map((row, index)=>{
-          return(
-            <div className={row.active?"builder-row active":"builder-row"}  
-            onMouseEnter={()=>{
+            return(
+              <div id="main-body" style={bodyStyles}>      
+                <div className={row.active?"builder-row active":"builder-row"}  
+                onMouseEnter={()=>{
               if(rowActiveIndex!=index&&componentHover==false){
                 setRows((prev)=>{
                   let prevCopy = [...prev];
@@ -864,9 +738,9 @@ function App() {
               })
               }
               
-            }}
+                }}
 
-            onMouseLeave={()=>{
+                onMouseLeave={()=>{
               if(rowActiveIndex!=index){
                 setRows((prev)=>{
                   let prevCopy = [...prev];
@@ -876,9 +750,9 @@ function App() {
                 })
               }
               
-            }}
+                }}
 
-            onClick={()=>{
+              onClick={()=>{
               setRows((prev)=>{
                 let prevCopy = [...prev];
                 if(prevCopy[index]!==undefined){
@@ -898,7 +772,7 @@ function App() {
               })
               setRowActiveIndex(index);
               setRowActive(true);
-            }}
+              }}
           >
 
             {row.showButtons&&
@@ -988,10 +862,6 @@ function App() {
                                 
                               {c.type=="button"&&
                                 <div
-                                style={{
-                                  "textAlign": c.style.textAlign,
-                                  "width": c.style.width
-                                }}
                                 className={(c.hoveractive&&c.active==false)&&"component-active"}
                                 onMouseEnter={()=>{
                                   setComponentHover(true);
@@ -1014,27 +884,8 @@ function App() {
                                   makeComponentActive(index, cindex, componentindex)
                                 }}
                               >
-                                <ButtonComponent active={c.active} style={
-                                  {
-                                    "paddingLeft": c.style.paddingLeft,
-                                    "paddingRight": c.style.paddingRight,
-                                    "paddingTop": c.style.paddingTop,
-                                    "paddingBottom": c.style.paddingBottom,
-                                    "borderBottom": c.style.borderBottom,
-                                    "borderTop": c.style.borderTop,
-                                    "borderRight": c.style.borderRight,
-                                    "borderLeft": c.style.borderLeft,
-                                    "borderTopLeftRadius":c.style.borderTopLeftRadius,
-                                    "borderTopRightRadius": c.style.borderTopRightRadius,
-                                    "borderBottomLeftRadius": c.style.borderBottomLeftRadius,
-                                    "borderBottomRightRadius": c.style.borderBottomRightRadius,
-                                    "background": c.style.background,
-                                    "color": c.style.color,
-                                    "lineHeight": c.style.lineHeight,
-                                    "fontSize": c.style.fontSize    
-                                  }
-                                }></ButtonComponent>
-                                </div>
+                                <ButtonComponent active={c.active} style={c.style}></ButtonComponent>
+                              </div>
                               }
 
                               {c.type=="header"&&
@@ -1066,10 +917,6 @@ function App() {
                               }
                               {c.type=="divider"&&
                                 <div
-                                  style={{
-                                    display: "flex",
-                                    justifyContent: c.style.justifyContent
-                                  }}
                                   className={(c.hoveractive&&c.active==false)&&"component-active"}
                                   onMouseEnter={()=>{
                                     setComponentHover(true);
@@ -1092,10 +939,7 @@ function App() {
                                     makeComponentActive(index, cindex, componentindex)
                                   }}
                                 >
-                                  <DividerComponent style={{
-                                    width: c.style.width,
-                                    border: c.style.border
-                                  }}></DividerComponent>
+                                  <DividerComponent style={c.style}></DividerComponent>
                                 </div>
 
                               }
@@ -1192,16 +1036,17 @@ function App() {
                 )
               })}
             </div>
-            </div>
+                </div>
+              </div>  
           )
           
         })}  
-        </div>  
+      
       </div>
       <div className="design-elements">
         {menuItemActive=="content"&&
           <>
-            {(componentActive==""&&rowActive==false)&&
+            {(componentActive==""&&rowActive==null)&&
               <>
                 <div className='design-element-menu'>
                   <div className='design-element-menu-item' onClick={()=>{toggleDesignElement("contents")}}>
@@ -1296,7 +1141,7 @@ function App() {
                 }
               </>
             }
-            {(componentActive==""&&rowActive==true)&&
+            {(componentActive==""&&rowActive==null)&&
               <div className='blocks-content'>
                 <div className='blocks-content-header'>
                   <div className='title'>
@@ -1480,8 +1325,7 @@ function App() {
                       </BorderResizer>
                     </div>
                   </div>
-                </div>
-                
+                </div>          
               </div>
             }
             {(componentActive=="textbox")&&
@@ -1494,8 +1338,9 @@ function App() {
                   style={rows[activeComponentSettings.rowIndex].columns[activeComponentSettings.columnIndex].components[activeComponentSettings.componentIndex].style}
                   setStyle={setActiveComponentStyle}
                   settings={rows[activeComponentSettings.rowIndex].columns[activeComponentSettings.columnIndex].components[activeComponentSettings.componentIndex].settings}
-                  setSettings={setActiveComponentComponentSettings}
-                  ></ButtonToolbar>
+                  setSettings={setActiveComponentComponentSettings}>
+
+              </ButtonToolbar>
             }
             {(componentActive=="header")&&
               <HeadersToolBar
@@ -1548,10 +1393,10 @@ function App() {
                 settings={rows[activeComponentSettings.rowIndex].columns[activeComponentSettings.columnIndex].components[activeComponentSettings.componentIndex].settings} 
                 setSettings={setActiveComponentComponentSettings}
               >
-
               </HtmlToolBar>
             }
           </>
+
         }
         {menuItemActive=="body"&&
           <div className='body-styles'>
@@ -1697,4 +1542,4 @@ function App() {
 
 }
 
-export default App;
+export default EmailDesigner;
