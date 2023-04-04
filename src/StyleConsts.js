@@ -1,4 +1,7 @@
 
+export const bodyStyle = {
+    
+}
 
 export const columnStyle = {
 

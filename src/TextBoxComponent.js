@@ -1,6 +1,7 @@
 import { useState , useEffect} from "react"
 import {stateToHTML} from 'draft-js-export-html';
-
+import TextEditor from './TextEditor';
+import * as _ from "lodash";
 
 const TextBoxComponent = ({active,style, settings, setSettings})=>{
 
@@ -101,7 +102,7 @@ const TextBoxComponent = ({active,style, settings, setSettings})=>{
     const [mounted, setMounted] = useState(false);
 
     const handleTextBoxStyleInit = ()=>{
-        let bodyFont = bodyStyles.fontSize;
+        let bodyFont = style.fontSize;
         let font_size_key = "FONT_SIZE_"+bodyFont.replace("px","");
         let font_size_index = _.findIndex(Object.keys(customStyleState),(k)=>{return k==font_size_key});
         let customStyleStateCopy = {...customStyleState};
@@ -112,7 +113,7 @@ const TextBoxComponent = ({active,style, settings, setSettings})=>{
   
         }
   
-        let bodyTextColor = bodyStyles.color;
+        let bodyTextColor = style.color;
         let text_color_key = "COLOR_"+bodyTextColor.replace("#","");
         let text_color_index = _.findIndex(Object.keys(customStyleState),(k)=>{return k==text_color_key});
         if(text_color_index==-1){

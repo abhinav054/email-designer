@@ -1,118 +1,45 @@
+import { useState } from "react"
+import { PopoverPicker } from './ColorPicker';
+import PaddingResizer from './PaddingResizer';
+import BorderResizer from './BorderResizer';
+import Close from "./images/close.png";
 
+const BuilderRowToolBar = ({row, setRow, makeComponentDeactive})=>{
 
-const BuilderRowToolBar = ({position, setRows})=>{
+    const [columnsettingsactive,setColumnsettingsactive] = useState(0);
+    const [columnBackground, setColumnBackground] = useState("color");
+    const [rowBackground,setRowBackground] = useState("color");
+  
+    const toggleColumns = ()=>{
 
+    }
 
-    
+    const setActiveColumnStyle = ()=>{
 
+    }
 
+    const setActiveRowStyle = ()=>{
+
+    }
+
+    const getColumnBackgroundColor = ()=>{
+      return {
+        color: "",
+        active: false
+      }
+    }
+
+    const changeColumnBackground = ()=>{
+
+    }
 
     return(
-        <div className="design-elements">
-        {menuItemActive=="content"&&
-          <>
-            {(componentActive==""&&rowActive==false)&&
-              <>
-                <div className='design-element-menu'>
-                  <div className='design-element-menu-item' onClick={()=>{toggleDesignElement("contents")}}>
-                    Content
-                  </div>
-                  <div className='design-element-menu-item' onClick={()=>{toggleDesignElement("blocks")}}>
-                    Blocks
-                  </div>
-                </div>
-                {desginElement=="contents"&&
-                  <>
-                  <div className='design-element-row'>
-                    <div className='design-element' draggable 
-                                                    onDragStart={()=>{onElementDragStart("textbox")}}
-                                                    onDragEnd = {()=>{onElementDragStop()}}
-                                                    >
-                      <img className='design-element-img' src={Text}></img>
-                    </div>
-                    <div className='design-element' draggable
-                                                    onDragStart={()=>{onElementDragStart("header")}}
-                                                    onDragEnd = {()=>{onElementDragStop()}}
-
-                    >
-                      <img className='design-element-img' src={HeadingImage}></img>
-                    </div>
-                  </div>
-                  <div className='design-element-row'>
-                    <div className='design-element' draggable
-                                                    onDragStart={()=>{onElementDragStart("button")}}
-                                                    onDragEnd = {()=>{onElementDragStop()}}
-
-                    >
-                      <img className='design-element-img' src={ButtonImage}></img>
-                    </div>
-                    <div className='design-element' draggable
-                                                    onDragStart={()=>{onElementDragStart("divider")}}
-                                                    onDragEnd = {()=>{onElementDragStop()}}
-
-                    >
-                      <img className='design-element-img' src={Divider}></img>
-                    </div>
-                  </div>
-                  <div className='design-element-row'>
-                    <div className='design-element' draggable
-                                                    onDragStart={()=>{onElementDragStart("image")}}
-                                                    onDragEnd = {()=>{onElementDragStop()}}
-
-                    >
-                      <img className='design-element-img' src={ImagePlaceHolder}></img>
-                    </div>
-                    <div className='design-element' draggable
-                                                    onDragStart={()=>{onElementDragStart("html")}}
-                                                    onDragEnd = {()=>{onElementDragStop()}}
-
-                    >
-                      <img className='design-element-img' src={HtmlImage}></img>
-                    </div>
-                  </div>
-                  <div className="design-element-row">
-                    <div className="design-element" draggable
-                                                    onDragStart={()=>{onElementDragStart("menu")}}
-                                                    onDragEnd= {()=>{onElementDragStop()}}
-                                                    >
-                      <img className="design-element-img" src={MenuItem}></img>
-                    </div>
-                  </div>
-
-                  </>
-                }
-                {
-                  desginElement=="blocks"&&
-                  <>
-                    <div className='single-row'>
-                      <div className="block-show">
-                      </div>
-                    </div>
-                    <div className='double-row'>
-                      <div className="block-show">
-                      </div>
-                      <div className="block-show">
-                      </div>
-                    </div>
-                    <div className='triple-row'>
-                      <div className="block-show">
-                      </div>
-                      <div className="block-show">
-                      </div>
-                      <div className="block-show">
-                      </div>
-                    </div>
-                  </>
-                }
-              </>
-            }
-            {(componentActive==""&&rowActive==true)&&
-              <div className='blocks-content'>
+            <div className='blocks-content'>
                 <div className='blocks-content-header'>
                   <div className='title'>
                     Row
                   </div>
-                  <div className='close' onClick={()=>{closeRowActive()}}>
+                  <div className='close' onClick={makeComponentDeactive}>
                     <img src={Close} style={{width: 30, height: 30}}></img>
                   </div>
                 </div>
@@ -123,7 +50,7 @@ const BuilderRowToolBar = ({position, setRows})=>{
                     </p>
                   </div>
                   <div className='single-row' onClick={()=>{toggleColumns("1")}}>
-                    {(rowActiveIndex!=null&&rows[rowActiveIndex].type=="1")?
+                    {(row.columns.length==1)?
                       <div className="block-show-active">
                       </div>:
                       <div className="block-show">
@@ -132,7 +59,7 @@ const BuilderRowToolBar = ({position, setRows})=>{
                     
                   </div>
                   <div className='double-row' onClick={()=>{toggleColumns("2")}}>
-                    {(rowActiveIndex!=null&&rows[rowActiveIndex].type=="2")?
+                    {(row.columns.length==2)?
                         <>
                           <div className="block-show-active">
                           </div>
@@ -150,7 +77,7 @@ const BuilderRowToolBar = ({position, setRows})=>{
                     }
                   </div>
                   <div className='triple-row' onClick={()=>{toggleColumns("3")}}>
-                  {(rowActiveIndex!=null&&rows[rowActiveIndex].type=="3")?
+                  {(row.columns.length==3)?
                         <>
                           <div className="block-show-active">
                           </div>
@@ -179,7 +106,7 @@ const BuilderRowToolBar = ({position, setRows})=>{
                     </p>
                   </div>
                   <div className="column-headers">
-                    {rows[rowActiveIndex].columns.map((c,index)=>{
+                    {row.columns.map((c,index)=>{
                       return (
                         <div className={(columnsettingsactive==index)?"column-settings-heading active":"column-settings-heading"} onClick={()=>{setColumnsettingsactive(index)}}>
                           {"Column "+(index+1)}
@@ -201,9 +128,9 @@ const BuilderRowToolBar = ({position, setRows})=>{
                                 Background
                               </div>
                               <PopoverPicker 
-                                color={getColumnBackgroundColor(rowActiveIndex,columnsettingsactive).color} 
-                                active={getColumnBackgroundColor(rowActiveIndex,columnsettingsactive).active}
-                                onChange={changeColumnBackground(rowActiveIndex,columnsettingsactive)}
+                                color={getColumnBackgroundColor(columnsettingsactive).color} 
+                                active={getColumnBackgroundColor(columnsettingsactive).active}
+                                onChange={changeColumnBackground(columnsettingsactive)}
                                 ></PopoverPicker>
                             </div>
                           }
@@ -220,14 +147,14 @@ const BuilderRowToolBar = ({position, setRows})=>{
                         </div>
                         <div className="column-padding-settings">
                           <PaddingResizer
-                            style={rows[rowActiveIndex].columns[columnsettingsactive].style}
+                            style={row.columns[columnsettingsactive].style}
                             setStyle={setActiveColumnStyle}
                           >
                           </PaddingResizer>
                         </div>
                         <div className="column-border-settings">
                           <BorderResizer
-                            style={rows[rowActiveIndex].columns[columnsettingsactive].style}
+                            style={row.columns[columnsettingsactive].style}
                             setStyle={setActiveColumnStyle}
                           >
 
@@ -255,9 +182,9 @@ const BuilderRowToolBar = ({position, setRows})=>{
                                 Background
                               </div>
                               <PopoverPicker 
-                                color={getColumnBackgroundColor(rowActiveIndex,columnsettingsactive).color} 
-                                active={getColumnBackgroundColor(rowActiveIndex,columnsettingsactive).active}
-                                onChange={changeColumnBackground(rowActiveIndex,columnsettingsactive)}
+                                color={"#ffffff"} 
+                                active={true}
+                                onChange={()=>{}}
                                 ></PopoverPicker>
                             </div>
                           }
@@ -275,7 +202,7 @@ const BuilderRowToolBar = ({position, setRows})=>{
                     <div className="row-padding-settings">
 
                         <PaddingResizer
-                          style={rows[rowActiveIndex].style}
+                          style={row.style}
                           setStyle={setActiveRowStyle}
                         >
                         </PaddingResizer>
@@ -283,7 +210,7 @@ const BuilderRowToolBar = ({position, setRows})=>{
                     </div>
                     <div className="row-border-settings">
                       <BorderResizer
-                        style={rows[rowActiveIndex].style}
+                        style={row.style}
                         setStyle={setActiveRowStyle}
                       >
 
@@ -293,78 +220,7 @@ const BuilderRowToolBar = ({position, setRows})=>{
                 </div>
                 
               </div>
-            }
-            {(componentActive=="textbox")&&
-              <TextEditorAppToolbar closeComponent={makeComponentDeactive} deleteComponent={deleteComponent}></TextEditorAppToolbar>
-            }
-            {(componentActive=="button")&&
-              <ButtonToolbar 
-                  closeComponent={makeComponentDeactive} 
-                  deleteComponent={deleteComponent}
-                  style={rows[activeComponentSettings.rowIndex].columns[activeComponentSettings.columnIndex].components[activeComponentSettings.componentIndex].style}
-                  setStyle={setActiveComponentStyle}
-                  settings={rows[activeComponentSettings.rowIndex].columns[activeComponentSettings.columnIndex].components[activeComponentSettings.componentIndex].settings}
-                  setSettings={setActiveComponentComponentSettings}>
-
-                </ButtonToolbar>
-            }
-            {(componentActive=="header")&&
-              <HeadersToolBar
-                closeComponent={makeComponentDeactive}
-                deleteComponent={deleteComponent}
-                style={rows[activeComponentSettings.rowIndex].columns[activeComponentSettings.columnIndex].components[activeComponentSettings.componentIndex].style} 
-                setStyle={setActiveComponentStyle} 
-                settings={rows[activeComponentSettings.rowIndex].columns[activeComponentSettings.columnIndex].components[activeComponentSettings.componentIndex].settings} 
-                setSettings={setActiveComponentComponentSettings}
-              >
-              </HeadersToolBar>
-            }
-            {(componentActive=="divider")&&
-              <DividerToolBar
-                closeComponent={makeComponentDeactive}
-                deleteComponent={deleteComponent}
-                style={rows[activeComponentSettings.rowIndex].columns[activeComponentSettings.columnIndex].components[activeComponentSettings.componentIndex].style} 
-                setStyle={setActiveComponentStyle}
-              >
-              </DividerToolBar>
-            }
-            {(componentActive=="menu")&&
-              <MenuToolBar
-                closeComponent={makeComponentDeactive}
-                deleteComponent={deleteComponent}
-                style = {rows[activeComponentSettings.rowIndex].columns[activeComponentSettings.columnIndex].components[activeComponentSettings.componentIndex].style}
-                setStyle = {setActiveComponentStyle}
-                menuBarStyle = {rows[activeComponentSettings.rowIndex].columns[activeComponentSettings.columnIndex].components[activeComponentSettings.componentIndex].menuBarStyle}
-                setMenuBarStyle = {setMenuBarStyle}
-                settings={rows[activeComponentSettings.rowIndex].columns[activeComponentSettings.columnIndex].components[activeComponentSettings.componentIndex].settings} 
-                setSettings={setActiveComponentComponentSettings}
-              ></MenuToolBar>
-            }
-            {(componentActive=="image")&&
-              <ImageToolBar
-                closeComponent={makeComponentDeactive}
-                deleteComponent={deleteComponent}
-                style={rows[activeComponentSettings.rowIndex].columns[activeComponentSettings.columnIndex].components[activeComponentSettings.componentIndex].style}
-                setStyle = {setActiveComponentStyle}
-                settings={rows[activeComponentSettings.rowIndex].columns[activeComponentSettings.columnIndex].components[activeComponentSettings.componentIndex].settings} 
-                setSettings={setActiveComponentComponentSettings}
-              >
-
-              </ImageToolBar>
-            }
-            {(componentActive=="html")&&
-              <HtmlToolBar
-                closeComponent={makeComponentDeactive}
-                deleteComponent={deleteComponent}
-                settings={rows[activeComponentSettings.rowIndex].columns[activeComponentSettings.columnIndex].components[activeComponentSettings.componentIndex].settings} 
-                setSettings={setActiveComponentComponentSettings}
-              >
-
-              </HtmlToolBar>
-            }
-          </>
-        }
-        
-      </div>
     )
 }
+
+export default BuilderRowToolBar;

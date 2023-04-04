@@ -42,56 +42,30 @@ import ImageComponent from './ImageComponent';
 
 function EmailDesigner({}) {
 
-  
-
-
-
   const [menuItemActive, setMenuItemActive] = useState("body");
 
   const [elementDragged, setElementDragged] = useState("");
 
   const [columnsettingsactive, setColumnsettingsactive] = useState(0);
 
-  const [detailColumnPadding, setDetailColumnPadding] = useState(false);
-
   const [columnBackground, setColumnBackground] = useState("color");
 
   const [rowBackground, setRowBackground] = useState("color");
-
-  const [detailRowPadding, setDetailRowPadding] = useState(false);
 
   const [desginElement, setDesignElement] = useState("contents");
 
   const [componentActive, setComponentActive] = useState("");
 
-  const [componentHover, setComponentHover] = useState(false);
+  const [componentDraggedOver, setComponentDraggedOver] = useState([]);
 
-  const [showDragSpan, setShowDragSpan] = useState(false);
-
-
-  const [activeRowCoordinates, setaActiveRowCoordinates] = useState({
-    rowindex:null,
-    columnindex: null,
-    componentindex: null,
-    type: "",
-    rowCoordinates:{
-      
-    }
-  });
+  const [activeComponentCoordinates, setActiveComponentCoordinates] = useState([]);
+  
 
   const setComponentStyle = ()=>{
 
-
   }
 
-  const setStyle = (style)=>{
-    let activeRowCoordinatesCopy = {...activeRowCoordinates};
-    while(activeRowCoordinatesCopy.rowCoordinates!=""){
-
-    }
-
-  }
-
+  
   const [activeComponentSettings, setActiveComponentSettings] = useState({
     rowIndex: null,
     columnIndex: null,
@@ -130,14 +104,6 @@ function EmailDesigner({}) {
     event.preventDefault();
   }
 
-  const handleDragEnter = ()=>{
-    setShowDragSpan(true);
-  }
-
-  const handleDragExit = ()=>{
-    setShowDragSpan(false);
-  }
-
 
   const handleDrop = (index, column)=>{
     let elementOver = {
@@ -156,7 +122,11 @@ function EmailDesigner({}) {
   
 
   const onElementDragStop = ()=>{
+    let rowsCopy = [...rows];
     
+    for(let i=0; i < componentDraggedOver.length; i++){
+      rowsCopy = [];  
+    }
     if(elementOver.index==null&&elementOver.column==null){
       
       return
@@ -165,7 +135,8 @@ function EmailDesigner({}) {
     if(elementDragged=="textbox"){
       let rowsCopy = [...rows];
       let componentlength = rowsCopy[elementOver.index].columns[elementOver.column].components.length;
-      handleTextBoxStyleInit();
+      // handleTextBoxStyleInit();
+
       rowsCopy[elementOver.index].columns[elementOver.column].components.push(
         {
           "type": "textbox",
@@ -362,27 +333,11 @@ function EmailDesigner({}) {
 
   }
 
-  const handleTextEditorState = (rowindex, columnindex, componentindex)=>{
-      const setEditorState = (editorState)=>{
-        let rowsCopy = [...rows];
-        rowsCopy[rowindex].columns[columnindex].components[componentindex].settings = {
-          ...rowsCopy[rowindex].columns[columnindex].components[componentindex].settings,
-          editorState: editorState
-        };
-        setRows(rowsCopy);
-      }
-      return setEditorState;      
-  }
-
-  // const [rowActive, setRowActive] = useState(false);
-
-  const [rowActiveIndex, setRowActiveIndex] = useState(null);
 
   // each column can also have multiple components
   
   const [rows, setRows] = useState([
     {
-      "type": "2",
       "columns":[
         {
           "style":{
@@ -415,35 +370,35 @@ function EmailDesigner({}) {
     }
   ])
 
-  const setActiveRowStyle = (style)=>{
-    let rowsCopy = [...rows];
-    rowsCopy[rowActiveIndex].style = style;
-    setRows(rowsCopy);
-  }
+  // const setActiveRowStyle = (style)=>{
+  //   let rowsCopy = [...rows];
+  //   rowsCopy[rowActiveIndex].style = style;
+  //   setRows(rowsCopy);
+  // }
 
 
-  const setActiveColumnStyle = (style)=>{
-    let rowsCopy = [...rows];
-    rowsCopy[rowActiveIndex].columns[columnsettingsactive].style = style;
-    setRows(rowsCopy)
-  }
+  // const setActiveColumnStyle = (style)=>{
+  //   let rowsCopy = [...rows];
+  //   rowsCopy[rowActiveIndex].columns[columnsettingsactive].style = style;
+  //   setRows(rowsCopy)
+  // }
 
-  const getColumnBackgroundColor = (rowindex,columnindex)=>{
-      let rowsCopy = [...rows];
-      let column = {...rowsCopy[rowindex].columns[columnindex]};
-      if(column.style.background==undefined){
-        return {
-          "color":"#ffffff",
-          "active": false
-        }
-      }else{
-        return {
-          "color": column.style.background,
-          "active": true
-        }
-      }
+  // const getColumnBackgroundColor = (rowindex,columnindex)=>{
+  //     let rowsCopy = [...rows];
+  //     let column = {...rowsCopy[rowindex].columns[columnindex]};
+  //     if(column.style.background==undefined){
+  //       return {
+  //         "color":"#ffffff",
+  //         "active": false
+  //       }
+  //     }else{
+  //       return {
+  //         "color": column.style.background,
+  //         "active": true
+  //       }
+  //     }
 
-  }
+  // }
 
 
   const toggleDesignElement = (element)=>{
@@ -487,238 +442,158 @@ function EmailDesigner({}) {
 
   }
 
-  const closeRowActive = ()=>{
-    let rowsCopy = [...rows];
-    let activeRowIndex = _.findIndex(rowsCopy, (row)=>{return row.editable});
-    if(activeRowIndex>-1){
-      rowsCopy[activeRowIndex].editable = false;
-      rowsCopy[activeRowIndex].showButtons = false;
-      rowsCopy[activeRowIndex].active = false;
-    }
+  // const closeRowActive = ()=>{
+  //   let rowsCopy = [...rows];
+  //   let activeRowIndex = _.findIndex(rowsCopy, (row)=>{return row.editable});
+  //   if(activeRowIndex>-1){
+  //     rowsCopy[activeRowIndex].editable = false;
+  //     rowsCopy[activeRowIndex].showButtons = false;
+  //     rowsCopy[activeRowIndex].active = false;
+  //   }
     
-    setRowActive(false);
-    setRowActiveIndex(null);
-    setRows(rowsCopy);
-  }
+  //   setRowActive(false);
+  //   setRowActiveIndex(null);
+  //   setRows(rowsCopy);
+  // }
 
-  const toggleColumns = (columns)=>{
-    let rowsCopy = [...rows];
-    let activeRow = rowsCopy[rowActiveIndex];
-    activeRow.columns = []
-    let numcolumns = parseInt(columns);
-    let width = 100/numcolumns;
-    activeRow.type = columns;
-    for(let i=0; i < numcolumns; i++){
-      activeRow.columns.push(
-        {
-          "active": false,
-          "style":{
-            ...columnStyle,
-            ...bodyStyles,
-            width: width+"%"
-          },
-          "components":[]
-        }
-      )
-    }
-    rowsCopy[rowActiveIndex] = activeRow;
-    setRows(rowsCopy);
-  }
-
-  const deleteRow = (index)=>{
-    let rowsCopy = [...rows];
-    rowsCopy.splice(index,1);
-    setRows(rowsCopy);
-  }
-
-  const makeComponentActive = (rowindex, columnindex, componentindex)=>{
-    let rowsCopy = [...rows];
-    let componentCopy = {...rowsCopy[rowindex].columns[columnindex].components[componentindex]};
-    if(rowsCopy[rowindex].columns[columnindex].components[componentindex].type=="textbox"){
-      componentCopy.active = true;
-      setComponentActive("textbox");
-    }
-    if(rowsCopy[rowindex].columns[columnindex].components[componentindex].type=="button"){
-      componentCopy.active = true;
-      setComponentActive("button")
-    }
-    if(rowsCopy[rowindex].columns[columnindex].components[componentindex].type=="header"){
-      componentCopy.active = true;
-      setComponentActive("header");
-    }
-
-    if(rowsCopy[rowindex].columns[columnindex].components[componentindex].type=="divider"){
-      componentCopy.active = true;
-      setComponentActive("divider");
-    }
-    
-    if(rowsCopy[rowindex].columns[columnindex].components[componentindex].type=="menu"){
-      componentCopy.active = true;
-      setComponentActive("menu");
-    }
-
-    if(rowsCopy[rowindex].columns[columnindex].components[componentindex].type=="image"){
-      componentCopy.active = true;
-      setComponentActive("image");
-    }
-
-    if(rowsCopy[rowindex].columns[columnindex].components[componentindex].type=="html"){
-      componentCopy.active = false;
-      setComponentActive("html"); 
-    }
-
-
-
-    if(activeComponentSettings.rowIndex!=rowindex||activeComponentSettings.columnIndex!=columnindex||activeComponentSettings.columnIndex!=componentindex){
-      rowsCopy = makeComponentDeactiveRows(rowsCopy);
-    }
-    
-    
-    rowsCopy[rowindex].columns[columnindex].components[componentindex] = componentCopy;
-
-
-    let activecomponentsettings = {
-      rowIndex: rowindex,
-      columnIndex: columnindex,
-      componentIndex: componentindex
-    }
-
-    setActiveComponentSettings(activecomponentsettings);
-
-    setRows(rowsCopy);
-
-  }
-
-  const makeComponentDeactiveRows = (rowsCopy)=>{
-    if(activeComponentSettings.rowIndex!=null&&activeComponentSettings.columnIndex!=null&activeComponentSettings.componentIndex!=null){
-      let componentCopy = {...rowsCopy[activeComponentSettings.rowIndex].columns[activeComponentSettings.columnIndex].components[activeComponentSettings.componentIndex]};
-      rowsCopy[activeComponentSettings.rowIndex].columns[activeComponentSettings.columnIndex].components[activeComponentSettings.componentIndex] = {...componentCopy,
-                                                                                                                                                    active: false
-                                                                                                                                                    }
-    }
-    return rowsCopy;
-  }
-
-  const changeColumnBackground= (rowindex, columnindex)=>{
-      const changeColor = (color,c)=>{
-        let rowsCopy = [...rows];
-        rowsCopy[rowindex].columns[columnindex].style = {...rowsCopy[rowindex].columns[columnindex].style,
-                                                         background: color
-                                                        };
-        setRows(rowsCopy);
-      }
-      return changeColor;
-  }
+  // const toggleColumns = (columns)=>{
+  //   let rowsCopy = [...rows];
+  //   let activeRow = rowsCopy[rowActiveIndex];
+  //   activeRow.columns = []
+  //   let numcolumns = parseInt(columns);
+  //   let width = 100/numcolumns;
+  //   activeRow.type = columns;
+  //   for(let i=0; i < numcolumns; i++){
+  //     activeRow.columns.push(
+  //       {
+  //         "active": false,
+  //         "style":{
+  //           ...columnStyle,
+  //           ...bodyStyles,
+  //           width: width+"%"
+  //         },
+  //         "components":[]
+  //       }
+  //     )
+  //   }
+  //   rowsCopy[rowActiveIndex] = activeRow;
+  //   setRows(rowsCopy);
+  // }
+  
+  // const changeColumnBackground= (rowindex, columnindex)=>{
+  //     const changeColor = (color,c)=>{
+  //       let rowsCopy = [...rows];
+  //       rowsCopy[rowindex].columns[columnindex].style = {...rowsCopy[rowindex].columns[columnindex].style,
+  //                                                        background: color
+  //                                                       };
+  //       setRows(rowsCopy);
+  //     }
+  //     return changeColor;
+  // }
 
   const makeComponentDeactive = ()=>{
-    let rowsCopy = [...rows];
-    console.log("deactive called");
-    console.log(activeComponentSettings);
-    if(activeComponentSettings.rowIndex!=null&&activeComponentSettings.columnIndex!=null&&activeComponentSettings.componentIndex!=null){
-      let componentCopy = {...rowsCopy[activeComponentSettings.rowIndex].columns[activeComponentSettings.columnIndex].components[activeComponentSettings.componentIndex]};
-      // deactivate textbox
-      if(rowsCopy[activeComponentSettings.rowIndex].columns[activeComponentSettings.columnIndex].components[activeComponentSettings.componentIndex].type=="textbox"){
-        componentCopy.active = false;
-        setComponentActive("");
-      }
-      // deactivate button
-      if(rowsCopy[activeComponentSettings.rowIndex].columns[activeComponentSettings.columnIndex].components[activeComponentSettings.componentIndex].type=="button"){
-        componentCopy.active=false;
-        setComponentActive("");
-      }
 
-      //deactivate header
-      if(rowsCopy[activeComponentSettings.rowIndex].columns[activeComponentSettings.columnIndex].components[activeComponentSettings.componentIndex].type=="header"){
-        componentCopy.active = false;
-        setComponentActive("");
-      }
-
-      if(rowsCopy[activeComponentSettings.rowIndex].columns[activeComponentSettings.columnIndex].components[activeComponentSettings.componentIndex].type=="divider"){
-        componentCopy.active = false;
-        setComponentActive("");
-      }
-
-      if(rowsCopy[activeComponentSettings.rowIndex].columns[activeComponentSettings.columnIndex].components[activeComponentSettings.componentIndex].type=="menu"){
-        componentCopy.active = false;
-        setComponentActive("");
-      }
-
-      if(rowsCopy[activeComponentSettings.rowIndex].columns[activeComponentSettings.columnIndex].components[activeComponentSettings.componentIndex].type=="image"){
-        componentCopy.active = false;
-        setComponentActive("");
-      }
-
-      if(rowsCopy[activeComponentSettings.rowIndex].columns[activeComponentSettings.columnIndex].components[activeComponentSettings.componentIndex].type=="html"){
-        componentCopy.active = false;
-        setComponentActive("");
-      }
-
-      rowsCopy[activeComponentSettings.rowIndex].columns[activeComponentSettings.columnIndex].components[activeComponentSettings.componentIndex] = componentCopy;
-      let activeComponentSettingsCopy = {...activeComponentSettings,
-                                         rowIndex: null,
-                                         columnIndex: null,
-                                         componentIndex: null
-                                        }
-      setActiveComponentSettings(activeComponentSettingsCopy);
-      setRows(rowsCopy);
-    }
   }
 
-  // const setEState = (rowindex, columnname, componentindex, e)=>{
-  //   let rowsCopy = [...rows];
-  //   let componentCopy = {...rowsCopy[rowindex].columns[columnname].components[componentindex]};
-  //   componentCopy.editorState = e;
-  //   rowsCopy[rowindex].columns[columnname].components[componentindex] = componentCopy;
-  //   setRows(rowsCopy)
+  const makeComponentActive = ()=>{
 
-  // }
-
-  // const makeColumnActive = (rowindex, columnindex)=>{
-  //     let rowsCopy = [...rows];
-  //     rowsCopy[rowindex].columns[columnindex].active = true;
-  //     setRows(rowsCopy);
-  // }
+  }
 
   const deleteComponent = ()=>{
-    let rowsCopy = [...rows];
-    if(activeComponentSettings.rowIndex!=null&&activeComponentSettings.columnIndex!=null&&activeComponentSettings.componentIndex!=null){
-      rowsCopy[activeComponentSettings.rowIndex].columns[activeComponentSettings.columnIndex].components.splice(activeComponentSettings.componentIndex,1); 
-      setRows(rowsCopy);
-    }
-    setComponentActive("");
-    let activeComponentSettingsCopy = {...activeComponentSettings,
-      rowIndex: null,
-      columnIndex: null,
-      componentIndex: null
-     }
-    setActiveComponentSettings(activeComponentSettingsCopy);
 
   }
-
   
-  const setMenuBarStyle = (style)=>{
-    let rowsCopy = [...rows];
-    rowsCopy[activeComponentSettings.rowIndex].columns[activeComponentSettings.columnIndex].components[activeComponentSettings.componentIndex].menuBarStyle = style;
-    setRows(rowsCopy);
-  }
+  // const makeComponentDeactive = ()=>{
+  //   let rowsCopy = [...rows];
+  //   console.log("deactive called");
+  //   console.log(activeComponentSettings);
+  //   if(activeComponentSettings.rowIndex!=null&&activeComponentSettings.columnIndex!=null&&activeComponentSettings.componentIndex!=null){
+  //     let componentCopy = {...rowsCopy[activeComponentSettings.rowIndex].columns[activeComponentSettings.columnIndex].components[activeComponentSettings.componentIndex]};
+  //     // deactivate textbox
+  //     if(rowsCopy[activeComponentSettings.rowIndex].columns[activeComponentSettings.columnIndex].components[activeComponentSettings.componentIndex].type=="textbox"){
+  //       componentCopy.active = false;
+  //       setComponentActive("");
+  //     }
+  //     // deactivate button
+  //     if(rowsCopy[activeComponentSettings.rowIndex].columns[activeComponentSettings.columnIndex].components[activeComponentSettings.componentIndex].type=="button"){
+  //       componentCopy.active=false;
+  //       setComponentActive("");
+  //     }
 
-  const setActiveComponentStyle = (style)=>{
-    let rowsCopy = [...rows];
-    rowsCopy[activeComponentSettings.rowIndex].columns[activeComponentSettings.columnIndex].components[activeComponentSettings.componentIndex].style = style;
-    setRows(rowsCopy);
-  }
+  //     //deactivate header
+  //     if(rowsCopy[activeComponentSettings.rowIndex].columns[activeComponentSettings.columnIndex].components[activeComponentSettings.componentIndex].type=="header"){
+  //       componentCopy.active = false;
+  //       setComponentActive("");
+  //     }
 
-  const setActiveComponentComponentSettings = (settings)=>{
-    let rowsCopy = [...rows];
-    rowsCopy[activeComponentSettings.rowIndex].columns[activeComponentSettings.columnIndex].components[activeComponentSettings.componentIndex].settings = settings;
-    setRows(rowsCopy);
-  }
+  //     if(rowsCopy[activeComponentSettings.rowIndex].columns[activeComponentSettings.columnIndex].components[activeComponentSettings.componentIndex].type=="divider"){
+  //       componentCopy.active = false;
+  //       setComponentActive("");
+  //     }
 
+  //     if(rowsCopy[activeComponentSettings.rowIndex].columns[activeComponentSettings.columnIndex].components[activeComponentSettings.componentIndex].type=="menu"){
+  //       componentCopy.active = false;
+  //       setComponentActive("");
+  //     }
 
-  const setRowActive = ()=>{
+  //     if(rowsCopy[activeComponentSettings.rowIndex].columns[activeComponentSettings.columnIndex].components[activeComponentSettings.componentIndex].type=="image"){
+  //       componentCopy.active = false;
+  //       setComponentActive("");
+  //     }
 
-  }
+  //     if(rowsCopy[activeComponentSettings.rowIndex].columns[activeComponentSettings.columnIndex].components[activeComponentSettings.componentIndex].type=="html"){
+  //       componentCopy.active = false;
+  //       setComponentActive("");
+  //     }
 
+  //     rowsCopy[activeComponentSettings.rowIndex].columns[activeComponentSettings.columnIndex].components[activeComponentSettings.componentIndex] = componentCopy;
+  //     let activeComponentSettingsCopy = {...activeComponentSettings,
+  //                                        rowIndex: null,
+  //                                        columnIndex: null,
+  //                                        componentIndex: null
+  //                                       }
+  //     setActiveComponentSettings(activeComponentSettingsCopy);
+  //     setRows(rowsCopy);
+  //   }
+  // }
+
+  // const deleteComponent = ()=>{
+  //   let rowsCopy = [...rows];
+  //   if(activeComponentSettings.rowIndex!=null&&activeComponentSettings.columnIndex!=null&&activeComponentSettings.componentIndex!=null){
+  //     rowsCopy[activeComponentSettings.rowIndex].columns[activeComponentSettings.columnIndex].components.splice(activeComponentSettings.componentIndex,1); 
+  //     setRows(rowsCopy);
+  //   }
+  //   setComponentActive("");
+  //   let activeComponentSettingsCopy = {...activeComponentSettings,
+  //     rowIndex: null,
+  //     columnIndex: null,
+  //     componentIndex: null
+  //    }
+  //   setActiveComponentSettings(activeComponentSettingsCopy);
+
+  // }
+  
+  // const setMenuBarStyle = (style)=>{
+  //   let rowsCopy = [...rows];
+  //   rowsCopy[activeComponentSettings.rowIndex].columns[activeComponentSettings.columnIndex].components[activeComponentSettings.componentIndex].menuBarStyle = style;
+  //   setRows(rowsCopy);
+  // }
+
+  // const setActiveComponentStyle = (style)=>{
+  //   let rowsCopy = [...rows];
+  //   rowsCopy[activeComponentSettings.rowIndex].columns[activeComponentSettings.columnIndex].components[activeComponentSettings.componentIndex].style = style;
+  //   setRows(rowsCopy);
+  // }
+
+  // const setActiveComponentComponentSettings = (settings)=>{
+  //   let rowsCopy = [...rows];
+  //   rowsCopy[activeComponentSettings.rowIndex].columns[activeComponentSettings.columnIndex].components[activeComponentSettings.componentIndex].settings = settings;
+  //   setRows(rowsCopy);
+  // }
+
+  // const setRowActive = ()=>{
+
+  // }
 
   return (
     <div className='App'>
@@ -727,316 +602,7 @@ function EmailDesigner({}) {
           {rows.map((row, index)=>{
             return(
               <div id="main-body" style={bodyStyles}>      
-                <div className={row.active?"builder-row active":"builder-row"}  
-                onMouseEnter={()=>{
-              if(rowActiveIndex!=index&&componentHover==false){
-                setRows((prev)=>{
-                  let prevCopy = [...prev];
-                  prevCopy[index].active = true;
-                  prevCopy[index].showButtons = true;
-                  return prevCopy;
-              })
-              }
-              
-                }}
 
-                onMouseLeave={()=>{
-              if(rowActiveIndex!=index){
-                setRows((prev)=>{
-                  let prevCopy = [...prev];
-                  prevCopy[index].active = false;
-                  prevCopy[index].showButtons = false;
-                  return prevCopy;
-                })
-              }
-              
-                }}
-
-              onClick={()=>{
-              setRows((prev)=>{
-                let prevCopy = [...prev];
-                if(prevCopy[index]!==undefined){
-                  let lasteditindex = _.findIndex(prevCopy, (row)=>{return row.editable});
-                  if(lasteditindex>-1){
-                    prevCopy[lasteditindex].editable = false;
-                    prevCopy[lasteditindex].active = false;
-                    prevCopy[lasteditindex].showButtons = false;
-                  }
-
-                  prevCopy[index].editable = true;
-                  prevCopy[index].active = true;
-                  prevCopy[index].showButtons = true;
-                  
-                }
-                return prevCopy;
-              })
-              setRowActiveIndex(index);
-              setRowActive(true);
-              }}
-          >
-
-            {row.showButtons&&
-              <>
-                
-                <div className="upper-add-button" onClick={()=>{addRow(index)}}>
-                  <img src={AddIcon} style={{width: 20}}></img>
-                </div>
-                <div className="lower-add-button" onClick={()=>{addRow(index+1)}}>
-                  <img src={AddIcon} style={{width: 20}}></img>
-                </div>
-                <div className='delete-button' onClick={()=>{deleteRow(index)}}>
-                  <img src={DeleteForever} style={{
-                        width: 30,
-                        height: 30,
-                        margin: 10
-                  }}></img>
-                </div>
-              </>
-            }
-            <div style={row.style}>
-              {row.columns.map((column,cindex)=>{
-                return(
-                  <div style={column.active?{width:column.style.width, border: "1px dashed blue"}:{width:column.style.width}}>
-                    <div style={{...column.style,width:"100%"}} 
-                        onDrop={()=>{handleDrop(index,cindex)}}
-                        onDragOver = {handleDragOver}
-                        onDragEnter={
-                          handleDragEnter
-                        }
-
-                        onDragExit={handleDragExit}
-
-                    >
-                    {column.components.length==0&&
-                      <div className="column-content-placeholder">
-                        Drag Element
-                      </div>
-                    }
-                    {
-                      column.components.length>0&&
-                        <>
-                          {column.components.map((c, componentindex)=>{
-                            return(
-                            <>
-                              {c.type=="textbox"&&
-                                <div style={c.style}
-                                  className={(c.hoveractive&&c.active==false)&&"component-active"}
-                                  onMouseEnter={()=>{
-                                    setComponentHover(true);
-                                    let rowsCopy = [...rows];
-                                    rowsCopy[index].columns[cindex].components[componentindex] = {...rowsCopy[index].columns[cindex].components[componentindex],
-                                                                                                hoveractive:true
-                                                                                               }
-                                    setRows(rowsCopy)
-                                   }}
-                                  onMouseLeave={()=>{
-                                    setComponentHover(false);
-                                    let rowsCopy = [...rows];
-                                    rowsCopy[index].columns[cindex].components[componentindex] = {...rowsCopy[index].columns[cindex].components[componentindex],
-                                                                                                hoveractive:false
-                                                                                               }
-                                    setRows(rowsCopy)
-                                  }}
-
-                                  onClick={()=>{
-                                    makeComponentActive(index, cindex, componentindex)
-                                  }}
-                                >
-                                  {c.type=="textbox"&&c.active==true&&
-                                    <TextEditor 
-                                      editorState={c.settings.editorState} 
-                                      setEditorState={handleTextEditorState(index,cindex,componentindex)}
-                                      customStyleState={customStyleState}
-                                      setCustomStyleState={setCustomStyleState}
-                                      textColor={bodyStyles.color}
-                                      backColor={bodyStyles.background}
-                                      fontsize={"FONT_SIZE_"+bodyStyles.fontSize.replace("px","")}
-                                    ></TextEditor>
-                                  }
-                                  {c.type=="textbox"&&c.active==false&&
-                                    <div dangerouslySetInnerHTML={{__html: c.settings.html}}>
-                                    </div>
-                                  }
-                                </div>
-                              }
-                                
-                              {c.type=="button"&&
-                                <div
-                                className={(c.hoveractive&&c.active==false)&&"component-active"}
-                                onMouseEnter={()=>{
-                                  setComponentHover(true);
-                                  let rowsCopy = [...rows];
-                                  rowsCopy[index].columns[cindex].components[componentindex] = {...rowsCopy[index].columns[cindex].components[componentindex],
-                                                                                            hoveractive:true
-                                                                                           }
-                                  setRows(rowsCopy)
-                                }}
-                                onMouseLeave={()=>{
-                                  setComponentHover(false);
-                                  let rowsCopy = [...rows];
-                                  rowsCopy[index].columns[cindex].components[componentindex] = {...rowsCopy[index].columns[cindex].components[componentindex],
-                                                                                            hoveractive:false
-                                                                                           }
-                                  setRows(rowsCopy)
-                                }}
-
-                                onClick={()=>{
-                                  makeComponentActive(index, cindex, componentindex)
-                                }}
-                              >
-                                <ButtonComponent active={c.active} style={c.style}></ButtonComponent>
-                              </div>
-                              }
-
-                              {c.type=="header"&&
-                                <div
-                                  className={(c.hoveractive&&c.active==false)&&"component-active"}
-                                  onMouseEnter={()=>{
-                                      setComponentHover(true);
-                                      let rowsCopy = [...rows];
-                                      rowsCopy[index].columns[cindex].components[componentindex] = {...rowsCopy[index].columns[cindex].components[componentindex],
-                                                                                            hoveractive:true
-                                                                                           }
-                                      setRows(rowsCopy)
-                                    }}
-                                  onMouseLeave={()=>{
-                                      setComponentHover(false);
-                                      let rowsCopy = [...rows];
-                                      rowsCopy[index].columns[cindex].components[componentindex] = {...rowsCopy[index].columns[cindex].components[componentindex],
-                                                                                            hoveractive:false
-                                                                                           }
-                                      setRows(rowsCopy)
-                                  }}
-
-                                  onClick={()=>{
-                                      makeComponentActive(index, cindex, componentindex)
-                                  }}
-                                >
-                                  <HeaderComponent active={c.active} style={c.style} settings={c.settings}></HeaderComponent>
-                                </div>
-                              }
-                              {c.type=="divider"&&
-                                <div
-                                  className={(c.hoveractive&&c.active==false)&&"component-active"}
-                                  onMouseEnter={()=>{
-                                    setComponentHover(true);
-                                    let rowsCopy = [...rows];
-                                    rowsCopy[index].columns[cindex].components[componentindex] = {...rowsCopy[index].columns[cindex].components[componentindex],
-                                                                                          hoveractive:true
-                                                                                         }
-                                    setRows(rowsCopy)
-                                  }}
-                                  onMouseLeave={()=>{
-                                    setComponentHover(false);
-                                    let rowsCopy = [...rows];
-                                    rowsCopy[index].columns[cindex].components[componentindex] = {...rowsCopy[index].columns[cindex].components[componentindex],
-                                                                                          hoveractive:false
-                                                                                         }
-                                    setRows(rowsCopy)
-                                  }}
-
-                                  onClick={()=>{
-                                    makeComponentActive(index, cindex, componentindex)
-                                  }}
-                                >
-                                  <DividerComponent style={c.style}></DividerComponent>
-                                </div>
-
-                              }
-
-                              {c.type=="menu"&&
-                                <div
-                                  className={(c.hoveractive&&c.active==false)&&"component-active"}
-                                  onMouseEnter={()=>{
-                                    setComponentHover(true);
-                                    let rowsCopy = [...rows];
-                                    rowsCopy[index].columns[cindex].components[componentindex] = {...rowsCopy[index].columns[cindex].components[componentindex],
-                                                                                          hoveractive:true
-                                                                                         }
-                                    setRows(rowsCopy)
-                                  }}
-                                  onMouseLeave={()=>{
-                                    setComponentHover(false);
-                                    let rowsCopy = [...rows];
-                                    rowsCopy[index].columns[cindex].components[componentindex] = {...rowsCopy[index].columns[cindex].components[componentindex],
-                                                                                          hoveractive:false
-                                                                                         }
-                                    setRows(rowsCopy)
-                                  }}
-
-                                  onClick={()=>{
-                                    makeComponentActive(index, cindex, componentindex)
-                                  }}
-                                >
-                                  <MenuComponent style={c.style} settings={c.settings} menuBarStyle={c.menuBarStyle}></MenuComponent>
-                                </div>
-                              }
-                              {c.type=="image"&&
-                                <div
-                                  className={(c.hoveractive&&c.active==false)&&"component-active"}
-                                  onMouseEnter={()=>{
-                                    setComponentHover(true);
-                                    let rowsCopy = [...rows];
-                                    rowsCopy[index].columns[cindex].components[componentindex] = {...rowsCopy[index].columns[cindex].components[componentindex],
-                                                                                          hoveractive:true
-                                                                                         }
-                                    setRows(rowsCopy)
-                                  }}
-                                  onMouseLeave={()=>{
-                                    setComponentHover(false);
-                                    let rowsCopy = [...rows];
-                                    rowsCopy[index].columns[cindex].components[componentindex] = {...rowsCopy[index].columns[cindex].components[componentindex],
-                                                                                          hoveractive:false
-                                                                                         }
-                                    setRows(rowsCopy)
-                                  }}
-
-                                  onClick={()=>{
-                                    makeComponentActive(index, cindex, componentindex)
-                                  }}
-                                >
-                                  <ImageComponent style={c.style} settings={c.settings}></ImageComponent>
-                                </div>
-                              }
-                              {c.type=="html"&&
-
-                                <div
-                                  className={(c.hoveractive&&c.active==false)&&"component-active"}
-                                  onMouseEnter={()=>{
-                                      setComponentHover(true);
-                                      let rowsCopy = [...rows];
-                                      rowsCopy[index].columns[cindex].components[componentindex] = {...rowsCopy[index].columns[cindex].components[componentindex],
-                                                        hoveractive:true
-                                                       }
-                                      setRows(rowsCopy)
-                                  }}
-                                  onMouseLeave={()=>{
-                                      setComponentHover(false);
-                                      let rowsCopy = [...rows];
-                                      rowsCopy[index].columns[cindex].components[componentindex] = {...rowsCopy[index].columns[cindex].components[componentindex],
-                                                                                            hoveractive:false
-                                                                                          }
-                                      setRows(rowsCopy)
-                                  }}
-
-                                  onClick={()=>{
-                                    makeComponentActive(index, cindex, componentindex)
-                                  }}
-                                >
-                                  <div dangerouslySetInnerHTML={{__html: c.settings.html}}></div>
-                                  </div>
-                              }
-                            </>
-                            )
-                          })}
-                        </>
-                    }
-                    </div>
-                  </div>
-                )
-              })}
-            </div>
-                </div>
               </div>  
           )
           
@@ -1046,7 +612,7 @@ function EmailDesigner({}) {
       <div className="design-elements">
         {menuItemActive=="content"&&
           <>
-            {(componentActive==""&&rowActive==null)&&
+            {(componentActive=="")&&
               <>
                 <div className='design-element-menu'>
                   <div className='design-element-menu-item' onClick={()=>{toggleDesignElement("contents")}}>
@@ -1141,7 +707,7 @@ function EmailDesigner({}) {
                 }
               </>
             }
-            {(componentActive==""&&rowActive==null)&&
+            {(componentActive=="row")&&
               <div className='blocks-content'>
                 <div className='blocks-content-header'>
                   <div className='title'>
