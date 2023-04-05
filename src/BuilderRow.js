@@ -23,7 +23,8 @@ const BuilderRow = ({
                       deleterowinternal,
                       handleDrop, 
                       makeComponentActive,
-                      makerowactive
+                      makerowactive,
+                      setClickActive
                     })=>{
 
 
@@ -155,22 +156,32 @@ const BuilderRow = ({
     return (
       <>
         <div className={row.active?"builder-row active":"builder-row"}  
-              onMouseEnter={()=>{setRowActive()}}
-
+              onMouseEnter={()=>{}}
               onMouseLeave={()=>{}}
-
               onClick={()=>{makerowactive([])}}
           >
 
             {row.showButtons&&
               <>
-                <div className="upper-add-button" onClick={()=>{addrowinternal([],"upper")}}>
+                <div className="upper-add-button"
+                     onMouseEnter={()=>{setClickActive("upper_add")}}
+                     onMouseLeave = {()=>{setClickActive("")}} 
+                     onClick={()=>{addrowinternal([],"upper")}}
+                >
                   <img src={AddIcon} style={{width: 20}}></img>
                 </div>
-                <div className="lower-add-button" onClick={()=>{addrowinternal([],"lower")}}>
+                <div className="lower-add-button"
+                     onMouseEnter={()=>{setClickActive("lower_add")}}
+                     onMouseLeave={()=>{setClickActive("")}}  
+                     onClick={()=>{addrowinternal([],"lower")}}
+                >
                   <img src={AddIcon} style={{width: 20}}></img>
                 </div>
-                <div className='delete-button' onClick={()=>{}}>
+                <div className='delete-button'
+                     onMouseEnter={()=>{setClickActive("delete_row")}}
+                     onMouseLeave={()=>{setClickActive("")}} 
+                     onClick={()=>{deleterowinternal([])}}
+                >
                   <img src={DeleteForever} style={{
                         width: 30,
                         height: 30,
@@ -328,7 +339,7 @@ const BuilderRow = ({
                                   handleDrop={handleChildDrop(cindex, componentindex)} 
                                   makeComponentActive={makeChildComponentActive(cindex, componentindex)}
                                   makerowactive = {makechildrowactive(cindex, componentindex)}
-                                  
+                                  setClickActive = {setClickActive}
                                   ></BuilderRow>
                               }
                             </>

@@ -59,8 +59,7 @@ const InterFaceContainer = ()=>{
             "showButtons": true,
             "editable": true,
             "style":{
-              ...rowStyle,
-              "display": "flex",
+              ...rowStyle
             }
           }
     ]);
@@ -73,56 +72,58 @@ const InterFaceContainer = ()=>{
 
     const [activeComponentIndex, setActiveComponentIndex] = useState([]);
 
+    const [clickActive,setClickActive] = useState("");
 
-    // const 
 
     const makerowactive = (index)=>{
       return (childrowindex)=>{
-        let rowsCopy = [...rows];
-        if(childrowindex.length==0){
-          let activeindex = _.findIndex(rowsCopy,(row)=>{return row.active});
-          if(activeindex>-1&&activeindex!=index){
-            rowsCopy[activeindex].active = false;
-            rowsCopy[activeindex].showButtons = false;
-          }
-          rowsCopy[index].active = true;
-          rowsCopy[index].showButtons = true;
-        }else if(childrowindex.length==1){
-          let activeindex = _.findIndex(rowsCopy, (row)=>{return row.active});
-          if(activeindex>-1&&activeindex!=index){
-            rowsCopy[activeindex].active = false;
-            rowsCopy[activeindex].showButtons = false;
-            deactivepreviouscomponents(rowsCopy[activeindex].columns);
-          }
-          let components = rowsCopy[index].columns[childrowindex[0].columnindex].components;
-          let componentactiveindex = _.findIndex(components, (c)=>{return c.active});
-          if(componentactiveindex>-1&&componentactiveindex!=childrowindex[0].componentindex){
-            components[componentactiveindex].active = false;
-            components[componentactiveindex].showButtons = false;
-          }
-          components[childrowindex[0].componentindex].active = true;
-          components[childrowindex[0].componentindex].showButtons = true;
-        }else{
-          let activeindex = _.findIndex(rowsCopy, (row)=>{return row.active});
-          if(activeindex>-1&&activeindex!=index){
-            rowsCopy[activeindex].active = false;
-            rowsCopy[activeindex].showButtons = false;
-            deactivepreviouscomponents(rowsCopy[activeindex].columns);
-          }
-          let components = rowsCopy[index].columns[childrowindex[0].columnindex].components;
-          let componentactiveindex = _.findIndex(components, (c)=>{return c.active});
-          if(componentactiveindex>-1&&componentactiveindex!=childrowindex[0].componentindex){
-            components[componentactiveindex].active = false;
-            components[componentactiveindex].showButtons = false;
-          }
-          components = components[childrowindex[0].componentindex];
-          components.active = true;
-          components.showButtons = true;
-          for(let i=1; i < childrowindex.length; i++){
-            if(i==(childrowindex.length-1)){
-              components = components.columns[childrowindex[i].columnindex].components;
-              let componentactiveindex = _.findIndex(components, (c)=>{return c.active});
-              if(componentactiveindex>-1&&componentactiveindex!=childrowindex[0].componentindex){
+        if(clickActive==""){
+          let rowsCopy = [...rows];
+          if(childrowindex.length==0){
+            let activeindex = _.findIndex(rowsCopy,(row)=>{return row.active});
+            if(activeindex>-1&&activeindex!=index){
+              rowsCopy[activeindex].active = false;
+              rowsCopy[activeindex].showButtons = false;
+              deactivepreviouscomponents(rowsCopy[activeindex].columns);
+            }
+            rowsCopy[index].active = true;
+            rowsCopy[index].showButtons = true;
+          }else if(childrowindex.length==1){
+            let activeindex = _.findIndex(rowsCopy, (row)=>{return row.active});
+            if(activeindex>-1&&activeindex!=index){
+              rowsCopy[activeindex].active = false;
+              rowsCopy[activeindex].showButtons = false;
+              deactivepreviouscomponents(rowsCopy[activeindex].columns);
+            }
+            let components = rowsCopy[index].columns[childrowindex[0].columnindex].components;
+            let componentactiveindex = _.findIndex(components, (c)=>{return c.active});
+            if(componentactiveindex>-1&&componentactiveindex!=childrowindex[0].componentindex){
+              components[componentactiveindex].active = false;
+              components[componentactiveindex].showButtons = false;
+            }
+            components[childrowindex[0].componentindex].active = true;
+            components[childrowindex[0].componentindex].showButtons = true;
+          }else{
+            let activeindex = _.findIndex(rowsCopy, (row)=>{return row.active});
+            if(activeindex>-1&&activeindex!=index){
+              rowsCopy[activeindex].active = false;
+              rowsCopy[activeindex].showButtons = false;
+              deactivepreviouscomponents(rowsCopy[activeindex].columns);
+            }
+            let components = rowsCopy[index].columns[childrowindex[0].columnindex].components;
+            let componentactiveindex = _.findIndex(components, (c)=>{return c.active});
+            if(componentactiveindex>-1&&componentactiveindex!=childrowindex[0].componentindex){
+              components[componentactiveindex].active = false;
+              components[componentactiveindex].showButtons = false;
+            }
+            components = components[childrowindex[0].componentindex];
+            components.active = true;
+            components.showButtons = true;
+            for(let i=1; i < childrowindex.length; i++){
+              if(i==(childrowindex.length-1)){
+                components = components.columns[childrowindex[i].columnindex].components;
+                let componentactiveindex = _.findIndex(components, (c)=>{return c.active});
+                if(componentactiveindex>-1&&componentactiveindex!=childrowindex[0].componentindex){
                   components[componentactiveindex].active = false;
                   components[componentactiveindex].showButtons = false;
               }
@@ -161,19 +162,20 @@ const InterFaceContainer = ()=>{
               }
             }
           }
+          }
+          setRows(rowsCopy);
         }
-        setRows(rowsCopy);
       }
     }
 
     const addrowinternal = (index)=>{
       return (childrowadd, position)=>{
-
         let rowsCopy = [...rows];
         if(position=="upper"){
             rowsCopy[index].active = false;
             rowsCopy[index].showButtons = false;
             rowsCopy[index].editable = false;
+            deactivepreviouscomponents(rowsCopy[index].columns);
             index = index -1
             for (let i = rowsCopy.length; i > index; i--) {
               rowsCopy[i] = rowsCopy[i - 1];
@@ -182,28 +184,36 @@ const InterFaceContainer = ()=>{
               "columns":[
                   {
                       "style":{...columnStyle,
-                      "width": "100%"
-                  },
-                  "components":[
+                               "width": "50%"
+                              },
+                      "components":[
     
-                  ],
-                  "active":false
+                      ],
+                      "active":false
+                  },
+                  {
+                    "style":{...columnStyle,
+                             "width": "50%"
+                            },
+                    "components":[
+  
+                    ],
+                    "active":false
                   }
               ],
               "active": true,
               "showButtons": true,
               "editable": true,
-              "style":{...rowStyle,
-                  "display": "flex",
-                  "width": "100%"
-              }
+              "style":{
+                ...rowStyle
+                }
             }
 
         }else if(position=="lower"){
             rowsCopy[index].active = false;
             rowsCopy[index].showButtons = false;
             rowsCopy[index].editable = false;
-            console.log(rowsCopy);
+            deactivepreviouscomponents(rowsCopy[index].columns);
             index = index +1
             for (let i = rowsCopy.length; i > index; i--) {
               rowsCopy[i] = rowsCopy[i - 1];
@@ -213,21 +223,29 @@ const InterFaceContainer = ()=>{
               "columns":[
                   {
                       "style":{...columnStyle,
-                      "width": "100%"
-                  },
-                  "components":[
+                              "width": "100%"
+                              },
+                      "components":[
     
-                  ],
-                  "active":false
+                      ],
+                      "active":false
+                  },
+                  {
+                    "style":{...columnStyle,
+                            "width": "100%"
+                            },
+                    "components":[
+  
+                    ],
+                    "active":false
                   }
-              ],
+                ],
               "active": true,
               "showButtons": true,
               "editable": true,
-              "style":{...rowStyle,
-                  "display": "flex",
-                  "width": "100%"
-              }
+              "style":{
+                        ...rowStyle
+                      }
             }
         }else{
             childrowadd[0] = {...childrowadd[0],
@@ -241,6 +259,7 @@ const InterFaceContainer = ()=>{
               components[activeRowIndex].active = false;
               components[activeRowIndex].showButtons = false;
               components[activeRowIndex].editable = false;
+              // deactivepreviouscomponents(components[activeRowIndex].columns);
             }
             for (let i = components.length; i > childrowadd[0].componentindex; i--){
               components[i] = components[i-1];
@@ -272,8 +291,7 @@ const InterFaceContainer = ()=>{
                             "showButtons": true,
                             "editable": true,
                             "style":{
-                              ...rowStyle,
-                              "display": "flex",
+                              ...rowStyle
                             }
                           };
           }else{
@@ -311,9 +329,7 @@ const InterFaceContainer = ()=>{
                                 "showButtons": true,
                                 "editable": true,
                                 "style":{
-                                  ...rowStyle,
-                                  "display": "flex",
-                                }
+                                  ...rowStyle                                }
                               };
 
               }else{
@@ -322,7 +338,7 @@ const InterFaceContainer = ()=>{
             }
           }
         }
-        console.log(rowsCopy);
+        setClickActive("");
         setRows(rowsCopy);
       }
     }
@@ -362,6 +378,7 @@ const InterFaceContainer = ()=>{
           }
           setActiveComponentIndex(activeComponentIndexCopy);
         }
+        setClickActive("");
         setRows(rowsCopy);
         
       }
@@ -504,7 +521,6 @@ const InterFaceContainer = ()=>{
         }
     }
 
-
     const onElementDragStop = ()=>{
         let activeComponentIndexCopy = [];
         
@@ -560,7 +576,6 @@ const InterFaceContainer = ()=>{
         }
     }
 
-
     const deactivepreviouscomponents=(columns)=>{
         for(let i=0; i < columns.length; i++){
             for(let j=0; j< columns[i].components.length; j++){
@@ -569,6 +584,8 @@ const InterFaceContainer = ()=>{
                     return;
                 }else if (columns[i].components[j].active&&columns[i].components[j].type=="columns"){
                     columns[i].components[j].active=false;
+                    columns[i].components[j].showButtons=false;
+                    columns[i].components[j].editable=false;
                     deactivepreviouscomponents(columns[i].components[j].columns);
                 }
             }
@@ -611,7 +628,6 @@ const InterFaceContainer = ()=>{
         }
         
     }
-
 
     const makeComponentDeactive = ()=>{
             let rowsCopy = [...rows];
@@ -660,7 +676,6 @@ const InterFaceContainer = ()=>{
             }
             setRows(rowsCopy);
     }
-
 
     const setRow = (index)=>{
         return (row)=>{
@@ -819,8 +834,6 @@ const InterFaceContainer = ()=>{
       setRows(rowsCopy)
     }
 
-    console.log(rows);
-
     return(
         <div className="App">
             <div id="test" className="design-container">
@@ -837,6 +850,7 @@ const InterFaceContainer = ()=>{
                             deleteComponent = {deleteComponent}
                             addrowinternal = {addrowinternal(index)}
                             makerowactive = {makerowactive(index)}
+                            setClickActive = {setClickActive}
                         >
 
                         </BuilderRow>
@@ -930,69 +944,65 @@ const InterFaceContainer = ()=>{
                   settings={getActiveComponentSettings}
                   setSettings={setActiveComponentSettings}
                 >
-
               </ButtonToolbar>
             }
             {(componentActive=="header")&&
               <HeadersToolBar
-              closeComponent={makeComponentDeactive} 
-              deleteComponent={deleteComponent}
-              style={getActiveComponentStyle()}
-              setStyle={setActiveComponentStyle}
-              settings={getActiveComponentSettings}
-              setSettings={setActiveComponentSettings}
+                  closeComponent={makeComponentDeactive} 
+                  deleteComponent={deleteComponent}
+                  style={getActiveComponentStyle()}
+                  setStyle={setActiveComponentStyle}
+                  settings={getActiveComponentSettings}
+                  setSettings={setActiveComponentSettings}
               >
               </HeadersToolBar>
             }
             {(componentActive=="divider")&&
               <DividerToolBar
-              closeComponent={makeComponentDeactive} 
-              deleteComponent={deleteComponent}
-              style={getActiveComponentStyle()}
-              setStyle={setActiveComponentStyle}
-              settings={getActiveComponentSettings}
-              setSettings={setActiveComponentSettings}
+                  closeComponent={makeComponentDeactive} 
+                  deleteComponent={deleteComponent}
+                  style={getActiveComponentStyle()}
+                  setStyle={setActiveComponentStyle}
+                  settings={getActiveComponentSettings}
+                  setSettings={setActiveComponentSettings}
               >
               </DividerToolBar>
             }
             {(componentActive=="menu")&&
               <MenuToolBar
-              closeComponent={makeComponentDeactive} 
-              deleteComponent={deleteComponent}
-              style={getActiveComponentStyle()}
-              setStyle={setActiveComponentStyle}
-              settings={getActiveComponentSettings}
-              setSettings={setActiveComponentSettings}
+                  closeComponent={makeComponentDeactive} 
+                  deleteComponent={deleteComponent}
+                  style={getActiveComponentStyle()}
+                  setStyle={setActiveComponentStyle}
+                  settings={getActiveComponentSettings}
+                  setSettings={setActiveComponentSettings}
               ></MenuToolBar>
             }
             {(componentActive=="image")&&
               <ImageToolBar
-              closeComponent={makeComponentDeactive} 
-              deleteComponent={deleteComponent}
-              style={getActiveComponentStyle()}
-              setStyle={setActiveComponentStyle}
-              settings={getActiveComponentSettings}
-              setSettings={setActiveComponentSettings}
+                  closeComponent={makeComponentDeactive} 
+                  deleteComponent={deleteComponent}
+                  style={getActiveComponentStyle()}
+                  setStyle={setActiveComponentStyle}
+                  settings={getActiveComponentSettings}
+                  setSettings={setActiveComponentSettings}
               >
-
               </ImageToolBar>
             }
             {(componentActive=="html")&&
               <HtmlToolBar
-              closeComponent={makeComponentDeactive} 
-              deleteComponent={deleteComponent}
-              style={getActiveComponentStyle()}
-              setStyle={setActiveComponentStyle}
-              settings={getActiveComponentSettings}
-              setSettings={setActiveComponentSettings}
+                  closeComponent={makeComponentDeactive} 
+                  deleteComponent={deleteComponent}
+                  style={getActiveComponentStyle()}
+                  setStyle={setActiveComponentStyle}
+                  settings={getActiveComponentSettings}
+                  setSettings={setActiveComponentSettings}
               >
               </HtmlToolBar>
             }
             </div>
         </div>
     )
-
-
 }
 
 

@@ -1,0 +1,45 @@
+.column-width-settings{
+    display: flex;
+    justify-content: space-between;
+    padding: 10px;
+}
+
+.row-alignment-settings{
+    display: flex;
+    justify-content: space-between;
+    padding: 10px;
+    border-bottom: 1px solid #eee;
+}
+
+.row-vertical-alignment-settings-options{
+    display: flex;
+}
+
+.row-vertical-alignment-settings-option{
+    padding: 5px;
+}
+
+.row-vertical-alignment-settings-option.active{
+    border: 2px solid #b0d2ef;
+}
+
+.row-horizontal-aligment-settings{
+    display: flex;
+    justify-content: space-between;
+    padding: 10px;
+    border-bottom: 1px solid #eee;
+
+}
+
+
+.row-horizontal-alignment-options{
+    display: flex;
+}
+
+.row-horizontal-alignment-option{
+    padding: 5px;
+}
+
+.row-horizontal-alignment-option.active{
+    border: 2px solid #b0d2ef;
+}

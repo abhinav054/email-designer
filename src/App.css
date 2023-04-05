@@ -124,6 +124,7 @@
   top: auto;
   bottom: -20px;
   opacity: 0.5;
+  z-index: 101;
 }
 
 
@@ -265,12 +266,17 @@ p{
 }
 
 
+
 .column-background-settings{
     display: block;
     text-align: left;
     justify-content: space-between;
     margin: 10px;
     border-bottom: 1px solid #eee;
+}
+
+.column-width-settings{
+  display: flex;
 }
 
 .column-background-buttons{

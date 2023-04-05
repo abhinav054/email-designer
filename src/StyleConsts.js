@@ -16,6 +16,8 @@ export const columnStyle = {
 }
 
 export const rowStyle = {
+    "display": "flex",
+    "justifyContent": "flex-start",
     "paddingLeft": 0,
     "paddingRight": 0,
     "paddingTop": 0,
