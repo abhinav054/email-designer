@@ -25,6 +25,7 @@ const BuilderRowToolBar = ({row, setRow, makeComponentDeactive})=>{
     const [columnBackground, setColumnBackground] = useState("color");
     const [rowBackground,setRowBackground] = useState("color");
   
+    // check the pop implementation -> to remove first element or the last element
     const toggleColumns = (number)=>{
       let rowCopy = {...row};
       let columnwidth = parseInt(100)/parseInt(number);

@@ -72,98 +72,96 @@ const InterFaceContainer = ()=>{
 
     const [activeComponentIndex, setActiveComponentIndex] = useState([]);
 
+    const [activeRowIndex, setActiveRowIndex] = useState([]);
+
     const [clickActive,setClickActive] = useState("");
 
 
-    const makerowactive = (index)=>{
-      return (childrowindex)=>{
-        if(clickActive==""){
-          let rowsCopy = [...rows];
-          if(childrowindex.length==0){
-            let activeindex = _.findIndex(rowsCopy,(row)=>{return row.active});
-            if(activeindex>-1&&activeindex!=index){
-              rowsCopy[activeindex].active = false;
-              rowsCopy[activeindex].showButtons = false;
-              deactivepreviouscomponents(rowsCopy[activeindex].columns);
-            }
-            rowsCopy[index].active = true;
-            rowsCopy[index].showButtons = true;
-          }else if(childrowindex.length==1){
-            let activeindex = _.findIndex(rowsCopy, (row)=>{return row.active});
-            if(activeindex>-1&&activeindex!=index){
-              rowsCopy[activeindex].active = false;
-              rowsCopy[activeindex].showButtons = false;
-              deactivepreviouscomponents(rowsCopy[activeindex].columns);
-            }
-            let components = rowsCopy[index].columns[childrowindex[0].columnindex].components;
-            let componentactiveindex = _.findIndex(components, (c)=>{return c.active});
-            if(componentactiveindex>-1&&componentactiveindex!=childrowindex[0].componentindex){
-              components[componentactiveindex].active = false;
-              components[componentactiveindex].showButtons = false;
-            }
-            components[childrowindex[0].componentindex].active = true;
-            components[childrowindex[0].componentindex].showButtons = true;
-          }else{
-            let activeindex = _.findIndex(rowsCopy, (row)=>{return row.active});
-            if(activeindex>-1&&activeindex!=index){
-              rowsCopy[activeindex].active = false;
-              rowsCopy[activeindex].showButtons = false;
-              deactivepreviouscomponents(rowsCopy[activeindex].columns);
-            }
-            let components = rowsCopy[index].columns[childrowindex[0].columnindex].components;
-            let componentactiveindex = _.findIndex(components, (c)=>{return c.active});
-            if(componentactiveindex>-1&&componentactiveindex!=childrowindex[0].componentindex){
-              components[componentactiveindex].active = false;
-              components[componentactiveindex].showButtons = false;
-            }
-            components = components[childrowindex[0].componentindex];
-            components.active = true;
-            components.showButtons = true;
-            for(let i=1; i < childrowindex.length; i++){
-              if(i==(childrowindex.length-1)){
-                components = components.columns[childrowindex[i].columnindex].components;
-                let componentactiveindex = _.findIndex(components, (c)=>{return c.active});
-                if(componentactiveindex>-1&&componentactiveindex!=childrowindex[0].componentindex){
-                  components[componentactiveindex].active = false;
-                  components[componentactiveindex].showButtons = false;
-              }
-              components[childrowindex[0].componentindex].active = true;
-              components[childrowindex[0].componentindex].showButtons = true;
 
+    const deactivatepreviousrow = (columns)=>{
+      for(let i=0; i < columns.length; i++){
+        for(let j=0; j< columns[i].components.length; j++){
+          if(columns[i].components[j].active&&columns[i].components[j].type=="columns"){
+                columns[i].components[j].active=false;
+                columns[i].components[j].showButtons=false;
+                columns[i].components[j].editable=false;
+                deactivatepreviousrow(columns[i].components[j].columns);
+          }
+        }
+      }
+      return;
+    }
+
+    
+
+    const makerowactive = (index)=>{
+      let clicklock = false;
+      return (childrowindex)=>{
+        if(clickActive==""&&clicklock==false){
+          clicklock = true
+          setTimeout(() => {
+            clicklock = false
+          },30);
+          let rowsCopy = [...rows];
+          let activeRowIndexCopy = [...activeRowIndex];
+          let proceed = true;
+          let childrowindexcopy = [];
+          if(childrowindex.length==0){
+            childrowindexcopy = [{rowindex: index}]
+          }else{
+            childrowindex[0] = {...childrowindex[0],
+                                rowindex: index
+                                }
+            childrowindexcopy = [{rowindex: index}, ...childrowindex]
+          }
+          if(activeRowIndex.length>0){
+            if(activeRowIndex[0].rowindex==index&&childrowindexcopy.length<activeRowIndexCopy.length){
+              proceed=false;
+            }
+          }
+          setActiveRowIndex(childrowindexcopy);
+          if(proceed){
+            let activeRowindex = _.findIndex(rowsCopy,(row)=>{return row.active});
+            if(activeRowindex>-1){
+              rowsCopy[activeRowindex].active = false;
+              rowsCopy[activeRowindex].showButtons = false;
+              rowsCopy[activeRowindex].editable = false;
+              deactivatepreviousrow(rowsCopy[activeRowindex].columns);
+            }
+            
+            if(childrowindex.length==0){
+              rowsCopy[index].active = true;
+              rowsCopy[index].showButtons = true;
+              rowsCopy[index].editable = true;
+            }else if(childrowindex.length==1){
+              rowsCopy[index].active = true;
+              rowsCopy[index].showButtons = true;
+              rowsCopy[index].editable = true;
+              rowsCopy[childrowindex[0].rowindex].columns[childrowindex[0].columnindex].components[childrowindex[0].componentindex].active = true;
+              rowsCopy[childrowindex[0].rowindex].columns[childrowindex[0].columnindex].components[childrowindex[0].componentindex].showButtons = true;
+              rowsCopy[childrowindex[0].rowindex].columns[childrowindex[0].columnindex].components[childrowindex[0].componentindex].editable = true;
             }else{
-              let components = components.columns[childrowindex[0].columnindex].components;
-              let componentactiveindex = _.findIndex(components, (c)=>{return c.active});
-              if(componentactiveindex>-1&&componentactiveindex!=childrowindex[0].componentindex){
-                  components[componentactiveindex].active = false;
-                  components[componentactiveindex].showButtons = false;
-              }
-              components[childrowindex[0].componentindex].active = true;
-              components[childrowindex[0].componentindex].showButtons = true;
-              for(let i=1; i < childrowindex.length; i++){
+              rowsCopy[index].active = true;
+              rowsCopy[index].showButtons = true;
+              rowsCopy[index].editable = true;
+              let components = rowsCopy[index].columns[childrowindex[0].columnindex].components;
+              components = components[childrowindex[0].componentindex];
+              components.active = true;
+              components.showButtons = true;
+              for(let i=1; i< components.length; i++){
                 if(i==(childrowindex.length-1)){
-                  components = components.columns[childrowindex[i].columnindex].components;
-                  let componentactiveindex = _.findIndex(components, (c)=>{return c.active});
-                  if(componentactiveindex>-1&&componentactiveindex!=childrowindex[i].componentindex){
-                    components[componentactiveindex].active = false;
-                    components[componentactiveindex].showButtons = false;
-                  }
-                  components[childrowindex[i].componentindex].active = true;
-                  components[childrowindex[i].componentindex].showButtons = true;
+                    components = components.columns[childrowindex[i].columnindex].components;
+                    components[childrowindex[i].componentindex].active = true;
+                    components[childrowindex[i].componentindex].showButtons = true;
                 }else{
-                  components = components.columns[childrowindex[i].columnindex].components;
-                  let componentactiveindex = _.findIndex(components, (c)=>{return c.active});
-                  if(componentactiveindex>-1&&componentactiveindex!=childrowindex[i].componentindex){
-                    components[componentactiveindex].active = false;
-                    components[componentactiveindex].showButtons = false;
-                  }
-                  components[childrowindex[i].componentindex].active = true;
-                  components[childrowindex[i].componentindex].showButtons = true;
+                    components = components.columns[childrowindex[i].columnindex].components;
+                    components[childrowindex[i].componentindex].active = true;
+                    components[childrowindex[i].componentindex].showButtons = true;
                 }
               }
             }
+            setRows(rowsCopy);
           }
-          }
-          setRows(rowsCopy);
         }
       }
     }
@@ -487,6 +485,8 @@ const InterFaceContainer = ()=>{
         }
 
         if(elementDragged=="columns"){
+            let componentDraggedOverLength = componentDraggedOver.length;
+            let zindex = 100+componentDraggedOverLength+1
             return {
                 "type": "columns",
                 "active": true,
@@ -515,7 +515,7 @@ const InterFaceContainer = ()=>{
                   "editable": true,
                   "style":{
                     ...rowStyle,
-                    "display": "flex",
+                    zIndex: zindex
                   }
                 }
         }
@@ -523,26 +523,39 @@ const InterFaceContainer = ()=>{
 
     const onElementDragStop = ()=>{
         let activeComponentIndexCopy = [];
-        
         if(componentDraggedOver.length==1){
-            
             let rowsCopy = [...rows];
-
             let element = getElement();
-            
+            let previousactiverowindex = _.findIndex(rowsCopy,(row)=>{return row.active});
+            rowsCopy[previousactiverowindex].active = false;
+            rowsCopy[previousactiverowindex].showButtons = false;
+            let columns = rowsCopy[previousactiverowindex].columns;
+            deactivepreviouscomponents(columns);
+            rowsCopy[componentDraggedOver[0].rowindex].active = true;
             let componentlength = rowsCopy[componentDraggedOver[0].rowindex].columns[componentDraggedOver[0].columnindex].components.length;
-            
             rowsCopy[componentDraggedOver[0].rowindex].columns[componentDraggedOver[0].columnindex].components.push(
                 getElement()
             );
-                        
             activeComponentIndexCopy.push({
                 rowindex: componentDraggedOver[0].rowindex,
                 columnindex: componentDraggedOver[0].columnindex,
                 componentindex: componentlength
-            })
-            
-            setComponentDraggedOver([])
+            });
+            if(elementDragged=="columns"){
+              let activeRowindex = [
+                            {rowindex: componentDraggedOver[0].rowindex},
+                            {
+                              rowindex: componentDraggedOver[0].rowindex,
+                              columnindex: componentDraggedOver[0].columnindex,
+                              componentindex: componentlength
+                            }
+                          ];
+              setActiveRowIndex(activeRowindex);
+            }else{
+                let activeRowindex = [{rowindex: componentDraggedOver[0].rowindex}];
+                setActiveRowIndex(activeRowindex);
+            }
+            setComponentDraggedOver([]);
             setActiveComponentIndex(activeComponentIndexCopy);
             setComponentActive(element.type);
             setRows(rowsCopy);
@@ -550,6 +563,11 @@ const InterFaceContainer = ()=>{
         }else{
             let rowsCopy = [...rows];
             let element = getElement();
+            let previousactiverowindex = _.findIndex(rowsCopy,(row)=>{return row.active});
+            rowsCopy[previousactiverowindex].active = false;
+            rowsCopy[previousactiverowindex].showButtons = false;
+            let columns = rowsCopy[previousactiverowindex].columns;
+            deactivepreviouscomponents(columns);
             rowsCopy[componentDraggedOver[0].rowindex].active = true;
             let component = rowsCopy[componentDraggedOver[0].rowindex].columns[componentDraggedOver[0].columnindex].components[componentDraggedOver[0].componentindex];
             component.active = true;
@@ -569,6 +587,18 @@ const InterFaceContainer = ()=>{
             componentDraggedOverCopy[componentDraggedOverCopy.length-1] = {...componentDraggedOverCopy[componentDraggedOverCopy.length-1],
                                                                            componentindex: componentindex
                                                                             }
+            if(elementDragged=="columns"){
+              let activerowindex = [{rowindex: componentDraggedOver[0].rowindex},
+                                      ...componentDraggedOverCopy
+                                    ]
+              setActiveRowIndex(activerowindex);
+            }else{
+              let activerowindex = [{rowindex: componentDraggedOver[0].rowindex}];
+              let componentDraggedOverCopyCopy = [...componentDraggedOverCopy];
+              componentDraggedOverCopyCopy.pop();
+              activerowindex = [...activerowindex,...componentDraggedOverCopyCopy]
+              setActiveRowIndex(activerowindex);
+            }
             setComponentDraggedOver([]);
             setActiveComponentIndex(componentDraggedOverCopy);
             setComponentActive(element.type);
@@ -594,20 +624,25 @@ const InterFaceContainer = ()=>{
 
     const makeComponentActive = (index)=>{
         return (childcomponentactive)=>{
-
-            let rowsCopy = [...rows];
-            let activerowindex = _.findIndex(rowsCopy, (row)=>{return row.active})
-            if(activerowindex>-1){
-              rowsCopy[activerowindex].active = false;
-              deactivepreviouscomponents(rowsCopy[activerowindex].columns);
-            }
-            childcomponentactive[0] = {...childcomponentactive[0],
-                                       rowindex: index
-                                    };
-            rowsCopy[index].active = true;
-            let columns = rowsCopy[index].columns;
-            let componentactive = "";
-            for(let i=0; i < childcomponentactive.length; i++){
+          console.log(childcomponentactive);
+          if(clickActive==""){
+              let rowsCopy = [...rows];
+              let activerowindex = _.findIndex(rowsCopy, (row)=>{return row.active})
+              if(activerowindex>-1){
+                rowsCopy[activerowindex].active = false;
+                rowsCopy[activerowindex].showButtons = false;
+                rowsCopy[activerowindex].editable = false;
+                deactivepreviouscomponents(rowsCopy[activerowindex].columns);
+              }
+            
+              rowsCopy[index].active = true;
+              let componentactive = "";
+              if(childcomponentactive.length>0){
+                childcomponentactive[0] = {...childcomponentactive[0],
+                  rowindex: index
+              };
+              let columns = rowsCopy[index].columns;
+              for(let i=0; i < childcomponentactive.length; i++){
                 if(i==(childcomponentactive.length-1)){
                     columns[childcomponentactive[i].columnindex].components[childcomponentactive[i].componentindex].active = true;
                     componentactive = columns[childcomponentactive[i].columnindex].components[childcomponentactive[i].componentindex].type;
@@ -621,12 +656,21 @@ const InterFaceContainer = ()=>{
                     columns[childcomponentactive[i].columnindex].components[childcomponentactive[i].componentindex].active = true;
                     columns = columns[childcomponentactive[i].columnindex].components[childcomponentactive[i].componentindex].columns
                 }
+              }
+            }else{
+              rowsCopy[index].showButtons = true;
+              rowsCopy[index].editable = true;
+              childcomponentactive[0] = {...childcomponentactive[0],
+                rowindex: index
+              }
+              componentactive = "columns"
+
             }
             setComponentActive(componentactive);
             setActiveComponentIndex(childcomponentactive);
             setRows(rowsCopy);
-        }
-        
+          }
+        }    
     }
 
     const makeComponentDeactive = ()=>{
